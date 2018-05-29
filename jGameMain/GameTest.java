@@ -1,4 +1,6 @@
 package jGameMain;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -23,20 +25,45 @@ public class GameTest implements Runnable{
 	
 	public GameTest(){
 		frame = new JFrame("Conquest");
+	    final String MAINMENUPANEL = "Main Menu Screen";
+	    final String SETTINGSMENUPANEL = "Settings Menu Screen";
+	    final String MULTIPLAYERPANEL = "Multiplayer Connection Screen";
+	    final String LOBBYPANEL = "Game Lobby";
+	    final String GAMEPANEL = "Game Screen";
 		//frame is the game window itself
 		JPanel mainPanel = (JPanel) frame.getContentPane();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		JPanel titlePanel = new JPanel();
+		JPanel comboBoxPane = new JPanel(); //use FlowLayout
+        String comboBoxItems[] = { MAINMENUPANEL, SETTINGSMENUPANEL, MULTIPLAYERPANEL, LOBBYPANEL, GAMEPANEL };
+		
+		
+		JPanel menuPanel = new JPanel();
+		JPanel settingsPanel = new JPanel();
+		JPanel multiPanel = new JPanel();
+		JPanel lobbyPanel = new JPanel();
+		JPanel gamePanel = new JPanel();
+		menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+		
+		JPanel cards = new JPanel(new CardLayout());
+        cards.add(menuPanel, MAINMENUPANEL);
+        cards.add(settingsPanel, SETTINGSMENUPANEL);
+         
+        mainPanel.add(comboBoxPane, BorderLayout.PAGE_START);		
+        mainPanel.add(cards,BorderLayout.CENTER);
+        CardLayout cardindex = (CardLayout)(cards.getLayout());
+       
+		
+        
+        
+        
+		
+        JPanel titlePanel = new JPanel();
 		JLabel titleLabel = new JLabel("CONQUEST");
 		titleLabel.setFont(new Font("Verdana",1,20));
 		titlePanel.add(titleLabel);	
-		mainPanel.add(titlePanel);
-		
-		JPanel menuPanel = new JPanel();
-		mainPanel.add(menuPanel);
-		menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+		menuPanel.add(titlePanel);
 		
 		JButton b01=new JButton("Create Game Lobby");    
 		b01.setBounds(100,100,140, 40);
@@ -56,7 +83,11 @@ public class GameTest implements Runnable{
 		b03.setBounds(100,100,140, 40);
 		//b03.setMnemonic(KeyEvent.QUIT);
 		b03.setActionCommand("settingsmenu");
-		//b03.addActionListener(this);
+		b03.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, SETTINGSMENUPANEL);
+			}
+		});
 		menuPanel.add(b03);
 		
 		JButton b04=new JButton("Quit");    
@@ -70,6 +101,24 @@ public class GameTest implements Runnable{
 		});
 		menuPanel.add(b04);
 		
+		JButton bmain=new JButton("Main Menu");    
+		bmain.setBounds(100,100,140, 40);
+		//b03.setMnemonic(KeyEvent.QUIT);
+		bmain.setActionCommand("settingsmenu");
+		bmain.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, MAINMENUPANEL);
+			}
+		});
+		settingsPanel.add(bmain);
+		
+		JButton b05=new JButton("Change Resolution");    
+		b05.setBounds(100,100,140, 40);
+		//b01.setMnemonic(KeyEvent.GAMESTART);
+		b05.setActionCommand("startlobby");
+		//b01.addActionListener(this);
+		settingsPanel.add(b05);
+		
         canvas = new Canvas();
         canvas.setBounds(0, 0, WIDTH, HEIGHT);
         canvas.setIgnoreRepaint(true);
@@ -77,6 +126,14 @@ public class GameTest implements Runnable{
         mainPanel.add(canvas);
       
         canvas.addMouseListener(new MouseControl());
+        
+        
+         
+     
+        
+        
+        
+        
       
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
