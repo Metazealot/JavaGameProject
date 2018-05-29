@@ -1,15 +1,7 @@
 package jGameMain;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.Canvas;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.event.MouseAdapter;
 import java.awt.image.BufferStrategy;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.CardLayout;
 import javax.swing.*;
 
 //this version is updated
@@ -24,6 +16,9 @@ public class GameTest implements Runnable{
 	BufferStrategy bufferStrategy;
 	
 	public GameTest(){
+		
+//Main Frame Setup
+		
 		frame = new JFrame("Conquest");
 	    final String MAINMENUPANEL = "Main Menu Screen";
 	    final String SETTINGSMENUPANEL = "Settings Menu Screen";
@@ -38,26 +33,32 @@ public class GameTest implements Runnable{
 		JPanel comboBoxPane = new JPanel(); //use FlowLayout
         String comboBoxItems[] = { MAINMENUPANEL, SETTINGSMENUPANEL, MULTIPLAYERPANEL, LOBBYPANEL, GAMEPANEL };
 		
-		
 		JPanel menuPanel = new JPanel();
-		JPanel settingsPanel = new JPanel();
-		JPanel multiPanel = new JPanel();
-		JPanel lobbyPanel = new JPanel();
-		JPanel gamePanel = new JPanel();
 		menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+		JPanel settingsPanel = new JPanel();
+		settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
+		JPanel multiPanel = new JPanel();
+		multiPanel.setLayout(new BoxLayout(multiPanel, BoxLayout.Y_AXIS));
+		JPanel lobbyPanel = new JPanel();
+		lobbyPanel.setLayout(new BoxLayout(lobbyPanel, BoxLayout.Y_AXIS));
+		JPanel gamePanel = new JPanel();
+		gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
+
 		
 		JPanel cards = new JPanel(new CardLayout());
         cards.add(menuPanel, MAINMENUPANEL);
         cards.add(settingsPanel, SETTINGSMENUPANEL);
+        cards.add(multiPanel, MULTIPLAYERPANEL);
+        cards.add(lobbyPanel, LOBBYPANEL);
+        cards.add(gamePanel, GAMEPANEL);
          
         mainPanel.add(comboBoxPane, BorderLayout.PAGE_START);		
         mainPanel.add(cards,BorderLayout.CENTER);
-        CardLayout cardindex = (CardLayout)(cards.getLayout());
-       
-		
+        CardLayout cardindex = (CardLayout)(cards.getLayout());        
         
         
         
+ //Main Menu       
 		
         JPanel titlePanel = new JPanel();
 		JLabel titleLabel = new JLabel("CONQUEST");
@@ -67,21 +68,26 @@ public class GameTest implements Runnable{
 		
 		JButton b01=new JButton("Create Game Lobby");    
 		b01.setBounds(100,100,140, 40);
-		//b01.setMnemonic(KeyEvent.GAMESTART);
 		b01.setActionCommand("startlobby");
-		//b01.addActionListener(this);
+		b01.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, LOBBYPANEL);
+			}
+		});
 		menuPanel.add(b01);
 
 		JButton b02=new JButton("Connect to IP");    
 		b02.setBounds(100,100,140, 40);
-		//b02.setMnemonic(KeyEvent.GAMEMULTI);
 		b02.setActionCommand("connectmulti");
-		//b02.addActionListener(this);
+		b02.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, MULTIPLAYERPANEL);
+			}
+		});
 		menuPanel.add(b02);
 
 		JButton b03=new JButton("Settings");    
 		b03.setBounds(100,100,140, 40);
-		//b03.setMnemonic(KeyEvent.QUIT);
 		b03.setActionCommand("settingsmenu");
 		b03.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -92,7 +98,6 @@ public class GameTest implements Runnable{
 		
 		JButton b04=new JButton("Quit");    
 		b04.setBounds(100,100,140, 40);
-		//b04.setMnemonic(KeyEvent.QUIT);
 		b04.setActionCommand("quitgame");
 		b04.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -101,23 +106,69 @@ public class GameTest implements Runnable{
 		});
 		menuPanel.add(b04);
 		
-		JButton bmain=new JButton("Main Menu");    
-		bmain.setBounds(100,100,140, 40);
-		//b03.setMnemonic(KeyEvent.QUIT);
-		bmain.setActionCommand("settingsmenu");
-		bmain.addActionListener(new ActionListener(){
+		
+		
+		
+//Settings Page	
+		
+		JButton settingsBmain=new JButton("Main Menu");    
+		settingsBmain.setBounds(100,100,140, 40);
+		settingsBmain.setActionCommand("settingsmenu");
+		settingsBmain.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				cardindex.show(cards, MAINMENUPANEL);
 			}
 		});
-		settingsPanel.add(bmain);
+		settingsPanel.add(settingsBmain);
 		
 		JButton b05=new JButton("Change Resolution");    
 		b05.setBounds(100,100,140, 40);
-		//b01.setMnemonic(KeyEvent.GAMESTART);
-		b05.setActionCommand("startlobby");
+		b05.setActionCommand("Change Resolution");
 		//b01.addActionListener(this);
 		settingsPanel.add(b05);
+		
+		
+		
+//Multiplayer Page
+		
+		JButton multiBmain=new JButton("Main Menu");    
+		multiBmain.setBounds(100,100,140, 40);
+		multiBmain.setActionCommand("settingsmenu");
+		multiBmain.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, MAINMENUPANEL);
+			}
+		});
+		multiPanel.add(multiBmain);
+		
+		JTextField ipTextBox = new JTextField("Enter IP Address");
+		ipTextBox.setBounds(100,100,140, 40);
+		multiPanel.add(ipTextBox);
+		
+		JButton multiConnect=new JButton("Connect");    
+		multiConnect.setBounds(100,100,140, 40);
+		multiConnect.setActionCommand("Connect to IP");
+		//b01.addActionListener(this);
+		multiPanel.add(multiConnect);
+		
+		
+//Lobby Page		
+		
+		JButton lobbyBmain=new JButton("Main Menu");    
+		lobbyBmain.setBounds(100,100,140, 40);
+		lobbyBmain.setActionCommand("settingsmenu");
+		lobbyBmain.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, MAINMENUPANEL);
+			}
+		});
+		lobbyPanel.add(lobbyBmain);
+		
+		
+		
+		
+		
+//Background mouse detection setup and frame config		
 		
         canvas = new Canvas();
         canvas.setBounds(0, 0, WIDTH, HEIGHT);
@@ -127,14 +178,6 @@ public class GameTest implements Runnable{
       
         canvas.addMouseListener(new MouseControl());
         
-        
-         
-     
-        
-        
-        
-        
-      
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setResizable(false);
@@ -157,6 +200,7 @@ public class GameTest implements Runnable{
    
 	public void run(){
       
+		//Primary runnable. This initiates action of the GameTest class
 		long beginLoopTime;
 		long endLoopTime;
 		long currentUpdateTime = System.nanoTime();
@@ -186,6 +230,8 @@ public class GameTest implements Runnable{
 	}
 	
 	protected void update(int deltaTime){
+		//Time operator. May end up removing this section as it was designed for real-time system alterations.
+		//However, it could be useful for animation purposes.
 		x += deltaTime * 0.2;
 		while(x > 500){
 			x -= 500;
@@ -194,6 +240,7 @@ public class GameTest implements Runnable{
 	}
 
 	public static void main(String [] args){
+		//Executes on program start, creating a new instance of the game itself.
 		GameTest ex = new GameTest();
 		new Thread(ex).start();
 	}
