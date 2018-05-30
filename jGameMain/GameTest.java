@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import javax.swing.*;
+import java.io.*;
+import java.util.Properties;
 
 //this version is updated
 
@@ -10,12 +12,36 @@ public class GameTest implements Runnable{
 	
 	final int WIDTH = 1000;
 	final int HEIGHT = 700;
+	String directory = System.getProperty("user.dir");
+	String settingsfile = (directory + "\\Settings.txt");
    
 	JFrame frame;
 	Canvas canvas;
 	BufferStrategy bufferStrategy;
 	
 	public GameTest(){
+		//This is the constructor, activated when a GameTest class object is instantiated.
+		
+		
+//Loading settings from config file		
+		
+		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		String configPath = rootPath + "jGameMain\\config.properties";
+		File configFile = new File(configPath);
+		
+		String username = "DefaultName";
+		
+		try {
+		    FileReader reader = new FileReader(configFile);
+		    Properties props = new Properties();
+		    props.load(reader);		 
+		    username = props.getProperty("username");
+		    reader.close();
+		} catch (FileNotFoundException ex) {
+			System.out.print("Config File not found.");
+		} catch (IOException ex) {
+			System.out.print("I/O Error");
+		}
 		
 //Main Frame Setup
 		
@@ -58,13 +84,16 @@ public class GameTest implements Runnable{
         
         
         
- //Main Menu       
+//Main Menu       
 		
         JPanel titlePanel = new JPanel();
 		JLabel titleLabel = new JLabel("CONQUEST");
 		titleLabel.setFont(new Font("Verdana",1,20));
 		titlePanel.add(titleLabel);	
 		menuPanel.add(titlePanel);
+		JLabel nameLabel = new JLabel("Username: " + username);
+		nameLabel.setFont(new Font("Verdana",1,14));
+		menuPanel.add(nameLabel);
 		
 		JButton b01=new JButton("Create Game Lobby");    
 		b01.setBounds(100,100,140, 40);
