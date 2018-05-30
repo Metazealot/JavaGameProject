@@ -48,6 +48,7 @@ public class GameTest implements Runnable{
 		frame = new JFrame("Conquest");
 	    final String MAINMENUPANEL = "Main Menu Screen";
 	    final String SETTINGSMENUPANEL = "Settings Menu Screen";
+	    final String SETTINGSPANEL2 = "Username Selection Screen";
 	    final String MULTIPLAYERPANEL = "Multiplayer Connection Screen";
 	    final String LOBBYPANEL = "Game Lobby";
 	    final String GAMEPANEL = "Game Screen";
@@ -57,7 +58,7 @@ public class GameTest implements Runnable{
 		mainPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
 		JPanel comboBoxPane = new JPanel(); //use FlowLayout
-        String comboBoxItems[] = { MAINMENUPANEL, SETTINGSMENUPANEL, MULTIPLAYERPANEL, LOBBYPANEL, GAMEPANEL };
+        String comboBoxItems[] = { MAINMENUPANEL, SETTINGSMENUPANEL, SETTINGSPANEL2, MULTIPLAYERPANEL, LOBBYPANEL, GAMEPANEL };
 		
 		JPanel menuPanel = new JPanel();
 		menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
@@ -69,11 +70,13 @@ public class GameTest implements Runnable{
 		lobbyPanel.setLayout(new BoxLayout(lobbyPanel, BoxLayout.Y_AXIS));
 		JPanel gamePanel = new JPanel();
 		gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
-
+		JPanel settingsPanel2 = new JPanel();
+		settingsPanel2.setLayout(new BoxLayout(settingsPanel2, BoxLayout.Y_AXIS));
 		
 		JPanel cards = new JPanel(new CardLayout());
         cards.add(menuPanel, MAINMENUPANEL);
         cards.add(settingsPanel, SETTINGSMENUPANEL);
+        cards.add(settingsPanel2, SETTINGSPANEL2);
         cards.add(multiPanel, MULTIPLAYERPANEL);
         cards.add(lobbyPanel, LOBBYPANEL);
         cards.add(gamePanel, GAMEPANEL);
@@ -81,8 +84,7 @@ public class GameTest implements Runnable{
         mainPanel.add(comboBoxPane, BorderLayout.PAGE_START);		
         mainPanel.add(cards,BorderLayout.CENTER);
         CardLayout cardindex = (CardLayout)(cards.getLayout());        
-        
-        
+                
         
 //Main Menu       
 		
@@ -142,7 +144,7 @@ public class GameTest implements Runnable{
 		
 		JButton settingsBmain=new JButton("Main Menu");    
 		settingsBmain.setBounds(100,100,140, 40);
-		settingsBmain.setActionCommand("settingsmenu");
+		settingsBmain.setActionCommand("mainmenu");
 		settingsBmain.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				cardindex.show(cards, MAINMENUPANEL);
@@ -156,13 +158,61 @@ public class GameTest implements Runnable{
 		//b01.addActionListener(this);
 		settingsPanel.add(b05);
 		
+		JButton buser=new JButton("Change Username");    
+		buser.setBounds(100,100,140, 40);
+		buser.setActionCommand("Change Username");
+		buser.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, SETTINGSPANEL2);
+			}
+		});
+		settingsPanel.add(buser);
 		
+//User Name Selection Page
+		
+		JButton settings2Bmain=new JButton("Back");    
+		settings2Bmain.setBounds(100,100,140, 40);
+		settings2Bmain.setActionCommand("settingsmenu");
+		settings2Bmain.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				cardindex.show(cards, MAINMENUPANEL);
+			}
+		});
+		settingsPanel2.add(settings2Bmain);
+		
+		JTextField userBox = new JTextField("Enter New Username");
+		userBox.setBounds(100,100,140, 40);
+		settingsPanel2.add(userBox);
+
+		JButton userRename=new JButton("Done");    
+		userRename.setBounds(100,100,140, 40);
+		userRename.setActionCommand("ChangeUserComplete");
+		userRename.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String tempname = userBox.getText();
+				nameLabel.setText(tempname);
+				try {
+				    Properties props = new Properties();
+				    props.setProperty("username", tempname);
+				    FileWriter writer = new FileWriter(configFile);
+				    props.store(writer, "player settings");
+				    writer.close();
+				} catch (FileNotFoundException ex) {
+				    // file does not exist
+				} catch (IOException ex) {
+				    // I/O error
+				}
+				cardindex.show(cards, SETTINGSMENUPANEL);
+				
+			}
+		});
+		settingsPanel2.add(userRename);
 		
 //Multiplayer Page
 		
 		JButton multiBmain=new JButton("Main Menu");    
 		multiBmain.setBounds(100,100,140, 40);
-		multiBmain.setActionCommand("settingsmenu");
+		multiBmain.setActionCommand("mainmenu");
 		multiBmain.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				cardindex.show(cards, MAINMENUPANEL);
@@ -185,7 +235,7 @@ public class GameTest implements Runnable{
 		
 		JButton lobbyBmain=new JButton("Main Menu");    
 		lobbyBmain.setBounds(100,100,140, 40);
-		lobbyBmain.setActionCommand("settingsmenu");
+		lobbyBmain.setActionCommand("menumenu");
 		lobbyBmain.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				cardindex.show(cards, MAINMENUPANEL);
