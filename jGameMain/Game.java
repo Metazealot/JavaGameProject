@@ -2,16 +2,19 @@ package jGameMain;
 
 public class Game {
 	
-	public Game (Player Host, Integer W, Integer H) {
-		Player[] playerList = new Player[4];
-		playerList[0] = Host;
-		Integer Width = W;
-		Integer Height = H;
-		if (W == 0) {
-			Width = 20;
+	Player[] players;
+	Integer Width;
+	Integer Height;
+	
+	public Game (Player[] playerArr, Conquest con, Integer W, Integer H) {
+		players = playerArr;
+		Width = 20;
+		Height = 20;
+		if (W != 0) {
+			Width = W;
 		}
-		if (H == 0) {
-			Height = 20;
+		if (H != 0) {
+			Height = H;
 		}
 		Board gameboard = new Board(Width,Height);
 	}

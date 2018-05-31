@@ -30,6 +30,18 @@ public class Display {
     JPanel gamePanel;
     JPanel settingsPanel2;
     JPanel cards;
+    
+    JPanel TOPpanel;	//Three sections for main game display
+    JPanel MIDDLEpanel;
+    JPanel BOTTOMpanel;
+    
+    JPanel TOPL; //Dropdown Menu
+    JPanel TOPR; //Resource Bar
+    JPanel MIDDLEL; //Icon Displays
+    JPanel MIDDLER; //Game Display
+    JPanel BOTTOML; //Minimap
+    JPanel BOTTOMR; //Command Card
+    
     CardLayout cardindex;
 	Canvas canvas;
 	String username;
@@ -52,14 +64,37 @@ public class Display {
 				menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
 				settingsPanel = new JPanel();
 				settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
+				settingsPanel2 = new JPanel();
+				settingsPanel2.setLayout(new BoxLayout(settingsPanel2, BoxLayout.Y_AXIS));
 				multiPanel = new JPanel();
 				multiPanel.setLayout(new BoxLayout(multiPanel, BoxLayout.Y_AXIS));
 				lobbyPanel = new JPanel();
 				lobbyPanel.setLayout(new BoxLayout(lobbyPanel, BoxLayout.Y_AXIS));
 				gamePanel = new JPanel();
+				TOPpanel = new JPanel();
+				gamePanel.add(TOPpanel);
+				MIDDLEpanel = new JPanel();
+				gamePanel.add(MIDDLEpanel);
+				BOTTOMpanel = new JPanel();
+				gamePanel.add(BOTTOMpanel);
 				gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
-				settingsPanel2 = new JPanel();
-				settingsPanel2.setLayout(new BoxLayout(settingsPanel2, BoxLayout.Y_AXIS));
+				TOPL = new JPanel();
+				TOPpanel.add(TOPL);
+				TOPR = new JPanel();
+				TOPpanel.add(TOPR);
+				TOPpanel.setLayout(new BoxLayout(TOPpanel, BoxLayout.X_AXIS));
+				MIDDLEL = new JPanel();
+				MIDDLEpanel.add(MIDDLEL);
+				MIDDLER = new JPanel();
+				MIDDLEpanel.add(MIDDLER);
+				MIDDLEpanel.setLayout(new BoxLayout(MIDDLEpanel, BoxLayout.X_AXIS));
+				BOTTOML = new JPanel();
+				BOTTOMpanel.add(BOTTOML);
+				BOTTOMR = new JPanel();
+				BOTTOMpanel.add(BOTTOMR);
+				BOTTOMpanel.setLayout(new BoxLayout(BOTTOMpanel, BoxLayout.X_AXIS));
+
+
 				
 				cards = new JPanel(new CardLayout());
 		        cards.add(menuPanel, MAINMENUPANEL);
@@ -234,15 +269,41 @@ public class Display {
 				lobbyBmain.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
 						cardindex.show(cards, MAINMENUPANEL);
+						//con.currentLobby = null;
+						//kills current lobby object
 					}
 				});
 				lobbyPanel.add(lobbyBmain);
 				
-				
+				JButton Bstartgame=new JButton("Start Game");    
+				Bstartgame.setBounds(100,100,140, 40);
+				Bstartgame.setActionCommand("menumenu");
+				Bstartgame.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						cardindex.show(cards, GAMEPANEL);
+						try {
+							con.StartGame(con.currentLobby.playerArr);
+						} catch (NullPointerException ex) {
+							System.out.print("No Lobby Exists.");
+						}
+					}
+				});
+				lobbyPanel.add(Bstartgame);
 				
 				
 		//Game Page
 				
+				
+				JButton quit=new JButton("Quit");    
+				quit.setBounds(100,100,140, 40);
+				quit.setActionCommand("menumenu");
+				quit.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						cardindex.show(cards, MAINMENUPANEL);
+						con.currentGame = null;
+					}
+				});
+				TOPL.add(quit);
 				
 		//Background mouse detection setup and frame config
 		        

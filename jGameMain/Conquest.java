@@ -26,6 +26,10 @@ public class Conquest implements Runnable{
 	String username;
     Lobby currentLobby;
     Game currentGame;
+    Integer FrameWidth;
+    Integer FrameHeight;
+    Integer GameWidth;
+    Integer GameHeight;
 	
 	public Conquest(){
 		//This is the constructor, activated when a Conquest class object is instantiated.
@@ -36,12 +40,20 @@ public class Conquest implements Runnable{
 		configPath = (rootPath + "jGameMain\\config.properties");
 		configFile = new File(configPath);
 		username = "DefaultName";
+		FrameWidth = 1000;
+		FrameHeight = 700;
+		GameWidth = 1000;
+		GameHeight = 700;
 		
 		try {
 		    FileReader reader = new FileReader(configFile);
 		    Properties props = new Properties();
 		    props.load(reader);		 
 		    username = props.getProperty("username");
+		    FrameWidth = Integer.parseInt(props.getProperty("FWidth"));
+		    FrameHeight = Integer.parseInt(props.getProperty("FHeight"));
+		    GameWidth = Integer.parseInt(props.getProperty("GWidth"));
+		    GameHeight = Integer.parseInt(props.getProperty("GHeight"));
 		    reader.close();
 		} catch (FileNotFoundException ex) {
 			System.out.print("Config File not found.");
@@ -59,6 +71,9 @@ public class Conquest implements Runnable{
 		currentLobby = new Lobby (hostplayer, this);
 	}
 	
+	public void StartGame(Player[] playerArr) {
+		currentGame = new Game (playerArr, this, GameWidth, GameHeight);
+	}
 
 	
 	long desiredFPS = 60;
