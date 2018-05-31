@@ -41,9 +41,9 @@ public class Conquest implements Runnable{
 		configFile = new File(configPath);
 		username = "DefaultName";
 		FrameWidth = 1000;
-		FrameHeight = 700;
-		GameWidth = 1000;
-		GameHeight = 700;
+		FrameHeight = 710;
+		GameWidth = 20;
+		GameHeight = 20;
 		
 		try {
 		    FileReader reader = new FileReader(configFile);
