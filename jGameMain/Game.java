@@ -17,5 +17,6 @@ public class Game {
 			Height = H;
 		}
 		Board gameboard = new Board(Width,Height);
+		con.maindisplay.Instantiate(Width, Height);
 	}
 }

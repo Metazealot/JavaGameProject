@@ -41,6 +41,9 @@ public class Display {
     JPanel MIDDLER; //Game Display
     JPanel BOTTOML; //Minimap
     JPanel BOTTOMR; //Command Card
+    JPanel boardpanel;
+    
+    JButton[][] gamebuttons;
     
     CardLayout cardindex;
 	Canvas canvas;
@@ -109,6 +112,8 @@ public class Display {
 				MIDDLER.setPreferredSize(new Dimension(800, 500));
 				MIDDLER.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				MIDDLER.setBorder(BorderFactory.createLineBorder(Color.black));
+				boardpanel = new JPanel();
+				MIDDLER.add(boardpanel);
 				MIDDLEpanel.add(MIDDLEL);
 				MIDDLEpanel.add(MIDDLER);
 				MIDDLEpanel.setLayout(new BoxLayout(MIDDLEpanel, BoxLayout.X_AXIS));
@@ -376,8 +381,37 @@ public class Display {
 		
 	}
 	
+	public void Instantiate(int W, int H) {
+		gamebuttons = new JButton[W][H];
+		
+		boardpanel.setLayout(new GridLayout(W, H));
+	    for(int x = 0; x < W; x++)
+	    {
+	        for(int y = 0; y < H; y++)
+	        {
+	        	gamebuttons[x][y] = new JButton("O");
+	        	gamebuttons[x][y].setBackground(Color.BLACK);
+	        	gamebuttons[x][y].setForeground(Color.WHITE);
+	        	gamebuttons[x][y].addActionListener(new TileListener());
+	            boardpanel.add(gamebuttons[x][y]);
+	        }
+	    }
+	}
+	
+	public void Update() {
+		
+	}
+	
 	private class MouseControl extends MouseAdapter{
 	      
 	   }
+	
+	private class TileListener implements ActionListener
+	{
+	    public void actionPerformed(ActionEvent e)
+	    {
+	        //Some code to change a specific button
+	    }
+	}
 	
 }
