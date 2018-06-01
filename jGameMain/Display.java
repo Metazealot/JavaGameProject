@@ -41,6 +41,7 @@ public class Display {
     JPanel MIDDLER; //Game Display
     JPanel BOTTOML; //Minimap
     JPanel BOTTOMR; //Command Card
+    JScrollPane boardscroller;
     JPanel boardpanel;
     
     JButton[][] gamebuttons;
@@ -113,7 +114,20 @@ public class Display {
 				MIDDLER.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				MIDDLER.setBorder(BorderFactory.createLineBorder(Color.black));
 				boardpanel = new JPanel();
-				MIDDLER.add(boardpanel);
+				boardpanel.setPreferredSize(new Dimension(2000, 2000));
+				boardscroller = new JScrollPane(boardpanel);
+				boardscroller.setPreferredSize(new Dimension(800,500));
+				JScrollBar vertical = boardscroller.getVerticalScrollBar();
+				InputMap im = vertical.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+				im.put(KeyStroke.getKeyStroke("DOWN"), "positiveUnitIncrement");
+				im.put(KeyStroke.getKeyStroke("UP"), "negativeUnitIncrement");
+				JScrollBar horizontal = boardscroller.getHorizontalScrollBar();
+				InputMap im2 = horizontal.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+				im2.put(KeyStroke.getKeyStroke("RIGHT"), "positiveUnitIncrement");
+				im2.put(KeyStroke.getKeyStroke("LEFT"), "negativeUnitIncrement");
+				boardscroller.getVerticalScrollBar().setUnitIncrement(16);
+				boardscroller.getHorizontalScrollBar().setUnitIncrement(16);
+				MIDDLER.add(boardscroller);
 				MIDDLEpanel.add(MIDDLEL);
 				MIDDLEpanel.add(MIDDLER);
 				MIDDLEpanel.setLayout(new BoxLayout(MIDDLEpanel, BoxLayout.X_AXIS));
