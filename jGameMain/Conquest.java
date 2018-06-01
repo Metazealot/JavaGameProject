@@ -35,7 +35,7 @@ public class Conquest implements Runnable{
 		//This is the constructor, activated when a Conquest class object is instantiated.
 		
 		
-//Loading settings from config file	
+//Loading settings from configuration file	
 		
 		configPath = (rootPath + "jGameMain\\config.properties");
 		configFile = new File(configPath);
@@ -67,11 +67,39 @@ public class Conquest implements Runnable{
    }
 	
 	public void StartLobby() {
+		
+		try {
+		    FileReader reader = new FileReader(configFile);
+		    Properties props = new Properties();
+		    props.load(reader);		 
+		    username = props.getProperty("username");
+		    reader.close();
+		} catch (FileNotFoundException ex) {
+			System.out.print("Config File not found.");
+		} catch (IOException ex) {
+			System.out.print("I/O Error");
+		}
+		
 		Player hostplayer = new Player();
+		hostplayer.username = username;
 		currentLobby = new Lobby (hostplayer, this);
 	}
 	
 	public void StartGame(Player[] playerArr) {
+		try {
+		    FileReader reader = new FileReader(configFile);
+		    Properties props = new Properties();
+		    props.load(reader);		 
+		    String WidthS = props.getProperty("GWidth");
+		    GameWidth = Integer.parseInt(WidthS);
+		    String HeightS = props.getProperty("GHeight");
+		    GameHeight = Integer.parseInt(HeightS);
+		    reader.close();
+		} catch (FileNotFoundException ex) {
+			System.out.print("Config File not found.");
+		} catch (IOException ex) {
+			System.out.print("I/O Error");
+		}		
 		currentGame = new Game (playerArr, this, GameWidth, GameHeight);
 	}
 

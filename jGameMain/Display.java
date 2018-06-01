@@ -30,6 +30,8 @@ public class Display {
     JPanel gamePanel;
     JPanel settingsPanel2;
     JPanel cards;
+    JLabel[] players;
+    JLabel titleLabel;
     
     JPanel TOPpanel;	//Three sections for main game display
     JPanel MIDDLEpanel;
@@ -41,8 +43,11 @@ public class Display {
     JPanel MIDDLER; //Game Display
     JPanel BOTTOML; //Minimap
     JPanel BOTTOMR; //Command Card
+    JPanel TILEINFO; //Shows current tile information
+    JPanel UNITINFO; //Shows unit on currently selected tile
     JScrollPane boardscroller;
     JPanel boardpanel;
+    JPanel lobbylist;
     
     JButton[][] gamebuttons;
     
@@ -55,7 +60,7 @@ public class Display {
 	public Display(Conquest con){
 		
 		//Main Frame Setup
-		
+
 				frame = new JFrame("Conquest");
 				//frame is the game window itself
 
@@ -75,6 +80,7 @@ public class Display {
 				multiPanel.setLayout(new BoxLayout(multiPanel, BoxLayout.Y_AXIS));
 				lobbyPanel = new JPanel();
 				lobbyPanel.setLayout(new BoxLayout(lobbyPanel, BoxLayout.Y_AXIS));
+				
 				gamePanel = new JPanel();
 				TOPpanel = new JPanel();
 				TOPpanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -108,6 +114,17 @@ public class Display {
 				MIDDLEL.setPreferredSize(new Dimension(200, 500));
 				MIDDLEL.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				MIDDLEL.setBorder(BorderFactory.createLineBorder(Color.black));
+				TILEINFO = new JPanel();
+				UNITINFO = new JPanel();
+				TILEINFO.setPreferredSize(new Dimension(200, 250));
+				TILEINFO.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+				TILEINFO.setBorder(BorderFactory.createLineBorder(Color.black));
+				UNITINFO.setPreferredSize(new Dimension(200, 250));
+				UNITINFO.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+				UNITINFO.setBorder(BorderFactory.createLineBorder(Color.black));
+				MIDDLEL.add(TILEINFO);
+				MIDDLEL.add(UNITINFO);
+				MIDDLEL.setLayout(new BoxLayout(MIDDLEL, BoxLayout.Y_AXIS));
 				MIDDLER = new JPanel();
 				MIDDLER.setMinimumSize(new Dimension(800, 500));
 				MIDDLER.setPreferredSize(new Dimension(800, 500));
@@ -147,6 +164,9 @@ public class Display {
 				BOTTOMpanel.setLayout(new BoxLayout(BOTTOMpanel, BoxLayout.X_AXIS));
 
 				
+				
+				
+				
 				cards = new JPanel(new CardLayout());
 		        cards.add(menuPanel, MAINMENUPANEL);
 		        cards.add(settingsPanel, SETTINGSMENUPANEL);
@@ -166,7 +186,7 @@ public class Display {
 		//Main Menu       
 				
 		        JPanel titlePanel = new JPanel();
-				JLabel titleLabel = new JLabel("CONQUEST");
+				titleLabel = new JLabel("CONQUEST");
 				titlePanel.setBorder(BorderFactory.createLineBorder(Color.black));
 				titleLabel.setFont(new Font("Verdana",1,20));
 				titlePanel.add(titleLabel);	
@@ -274,6 +294,7 @@ public class Display {
 				JTextField userBox = new JTextField("Enter New Username");
 				userBox.setBounds(20,40,40, 20);
 				settingsPanel2.add(userBox);
+				userBox.setMaximumSize(new Dimension(200, 40));
 
 				JButton userRename=new JButton("Done");    
 				userRename.setBounds(100,100,140, 40);
@@ -317,6 +338,7 @@ public class Display {
 				JTextField ipTextBox = new JTextField("Enter IP Address");
 				ipTextBox.setBounds(100,100,140, 40);
 				multiPanel.add(ipTextBox);
+				ipTextBox.setMaximumSize(new Dimension(200, 40));
 				
 				JButton multiConnect=new JButton("Connect");    
 				multiConnect.setBounds(100,100,140, 40);
@@ -338,6 +360,10 @@ public class Display {
 					}
 				});
 				lobbyPanel.add(lobbyBmain);
+				
+				lobbylist = new JPanel();
+				lobbylist.setBorder(BorderFactory.createLineBorder(Color.black));
+				lobbyPanel.add(lobbylist);
 				
 				JButton Bstartgame=new JButton("Start Game");    
 				Bstartgame.setBounds(100,100,140, 40);
@@ -395,17 +421,50 @@ public class Display {
 		
 	}
 	
-	public void Instantiate(int W, int H) {
-		gamebuttons = new JButton[W][H];
+	public void updateLobby(Player[] playerArr) {
+		lobbylist.removeAll();
+		players = new JLabel[4];
+		
+		lobbylist.setLayout(new BoxLayout(lobbylist, BoxLayout.Y_AXIS));
+
+	    for(int y = 0; y < 4; y++) {
+	    	try {
+	    		String temptext = playerArr[y].username;
+	    		players[y] = new JLabel(temptext);
+	    		players[y].setBackground(Color.cyan);
+	    	} catch (NullPointerException ex) {
+	    		players[y] = new JLabel("Empty Slot");
+	    	}
+
+            lobbylist.add(players[y]);
+	    	
+        }
+	}
+	
+	
+	public void Instantiate(int W, int H, Board B) {
+		boardpanel.removeAll();
+		gamebuttons = new TileButton[W][H];
 		
 		boardpanel.setLayout(new GridLayout(W, H));
 	    for(int x = 0; x < W; x++)
 	    {
 	        for(int y = 0; y < H; y++)
 	        {
-	        	gamebuttons[x][y] = new JButton("O");
-	        	gamebuttons[x][y].setBackground(Color.BLACK);
-	        	gamebuttons[x][y].setForeground(Color.WHITE);
+
+		    	try {
+		    		String tiletext = B.tileArray[x][y].TileName;
+		    		Color c = B.tileArray[x][y].c;
+		        	gamebuttons[x][y] = new TileButton(tiletext,x,y);
+		        	gamebuttons[x][y].setBackground(c);
+		        	gamebuttons[x][y].setForeground(Color.BLACK);
+		    	} catch (NullPointerException ex) {
+		    		gamebuttons[x][y] = new TileButton("Unknown",x,y);
+		    		gamebuttons[x][y].setBackground(Color.cyan);
+		        	gamebuttons[x][y].setForeground(Color.BLACK);
+		    	}
+	        	
+	        	
 	        	gamebuttons[x][y].addActionListener(new TileListener());
 	            boardpanel.add(gamebuttons[x][y]);
 	        }

@@ -4,10 +4,10 @@ import java.awt.Color;
 public class Grassland_Tile extends Tile {
 	
 	public Grassland_Tile() {
-		TileName = "Tile";
+		TileName = "G";
 		Defense = 0;
 		UnitContainer = new Unit[10];
-		c = Color.GREEN;
-
+		c = new Color(0, 220, 0);
+		//RGB
 	}
 }

@@ -3,9 +3,15 @@ import java.awt.*;
 
 abstract class Tile {
 	
-	String TileName = "Tile";
-	Integer Defense = 0;
-	Unit[] UnitContainer = new Unit[10];
-	Color c = Color.GRAY;
+	String TileName;
+	Integer Defense;
+	Unit[] UnitContainer;
+	Color c;
 	
+	public Tile() {
+		TileName = "Blank Tile";
+		 Defense = 0;
+		UnitContainer = new Unit[10];
+		c = Color.GRAY;
+	}
 }

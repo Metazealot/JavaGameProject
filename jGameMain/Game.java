@@ -5,6 +5,7 @@ public class Game {
 	Player[] players;
 	Integer Width;
 	Integer Height;
+	Board gameBoard;
 	
 	public Game (Player[] playerArr, Conquest con, Integer W, Integer H) {
 		players = playerArr;
@@ -16,7 +17,7 @@ public class Game {
 		if (H != 0) {
 			Height = H;
 		}
-		Board gameboard = new Board(Width,Height);
-		con.maindisplay.Instantiate(Width, Height);
+		gameBoard = new Board(Width,Height);
+		con.maindisplay.Instantiate(Width, Height, gameBoard);
 	}
 }
