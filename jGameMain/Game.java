@@ -32,12 +32,17 @@ public class Game {
 		
 	}
 	
-	public Player GetCurrentPlayer() {
+	public Player getCurrentPlayer() {
 		try {
 			return turnorder.get(0);
 		} catch (NullPointerException ex) {
 			return new Player("Default");
 		}
+	}
+	
+	public void cycleturn() {
+		Player tempplayer = turnorder.removeFirst();
+		turnorder.addLast(tempplayer);
 	}
 	
 }

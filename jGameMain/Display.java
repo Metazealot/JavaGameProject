@@ -408,6 +408,7 @@ public class Display {
 					public void actionPerformed(ActionEvent e) {
 						cardindex.show(cards, MAINMENUPANEL);
 						con.currentGame = null;
+						displayclear();
 					}
 				});
 				TOPL.add(quit);
@@ -492,13 +493,19 @@ public class Display {
 	}
 	
 	public void UpdateSidePanel(Tile T) {
-		Integer UnitCount = T.UnitContainer.length;
+		Integer UnitCount = T.Count();
 		if(UnitCount==0) {
-			unitdesc.setText("");
+			unitdesc.setText("No Units on this Tile");
 		}else {
-			//Show unit description
+			Unit U = T.UnitContainer.get(0);
+			unitdesc.setText(U.UnitName + "\n"+U.UnitDesc);
 		}
 		tiledesc.setText(T.TileName +"\n"+T.TileDesc);
+	}
+	
+	public void displayclear(){
+		unitdesc.setText("");
+		tiledesc.setText("");
 	}
 	
 	private class MouseControl extends MouseAdapter{

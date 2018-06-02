@@ -37,7 +37,7 @@ class TileListener implements ActionListener {
        //All primary button logic will go below.
        
        user = con.host;
-       currPlayer = con.currentGame.GetCurrentPlayer(); //This tells whose turn it is currently.
+       currPlayer = con.currentGame.getCurrentPlayer(); //This tells whose turn it is currently.
        if (user==currPlayer) {
     	   System.out.print("It is your turn.");
     	   checkturn = true;

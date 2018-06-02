@@ -1,21 +1,26 @@
 package jGameMain;
 import java.awt.*;
+import java.util.*;
 
-abstract class Tile {
+public abstract class Tile {
 	
-	String TileSymbol;
-	String TileName;
-	String TileDesc;
-	Integer Defense;
-	Unit[] UnitContainer;
-	Color c;
+	public String TileSymbol;
+	public String TileName;
+	public String TileDesc;
+	public Integer Defense;
+	public ArrayList<Unit> UnitContainer;
+	public Color c;
 	
 	public Tile() {
 		TileSymbol = "B";
 		TileName = "Blank Tile";
 		TileDesc = "";
 		 Defense = 0;
-		UnitContainer = new Unit[10];
+		UnitContainer = new ArrayList<Unit>();
 		c = Color.GRAY;
+	}
+	
+	public Integer Count() {
+		return UnitContainer.size();
 	}
 }
