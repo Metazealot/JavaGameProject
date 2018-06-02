@@ -16,10 +16,6 @@ public class Lobby {
 //The map size is effectively customizable here, in the lobby.
 	}
 	
-	public void start(String [] args){
-		
-	}
-	
 	public void addAI() {
 		playerList.add(new Player("AI"));
 		

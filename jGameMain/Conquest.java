@@ -32,7 +32,8 @@ public class Conquest implements Runnable{
     Integer GameWidth;
     Integer GameHeight;
     Player host;
-	
+	boolean gameactive;
+    
 	public Conquest(){
 		//This is the constructor, activated when a Conquest class object is instantiated.
 		
@@ -89,7 +90,8 @@ public class Conquest implements Runnable{
 	
 	public void StartGame(LinkedList<Player> playerList) {
 		try {
-		    FileReader reader = new FileReader(configFile);
+		    gameactive = true;
+			FileReader reader = new FileReader(configFile);
 		    Properties props = new Properties();
 		    props.load(reader);		 
 		    String WidthS = props.getProperty("GWidth");
@@ -101,10 +103,12 @@ public class Conquest implements Runnable{
 			System.out.print("Config File not found.");
 		} catch (IOException ex) {
 			System.out.print("I/O Error");
-		}		
+		}
+		for(int x = 0; x < playerList.size(); x++){ 
+			playerList.get(x).SetID((x+1));
+		}
 		currentGame = new Game (playerList, this, GameWidth, GameHeight);
 	}
-
 	
 	long desiredFPS = 60;
     long desiredDeltaLoop = (1000*1000*1000)/desiredFPS;
@@ -146,9 +150,16 @@ public class Conquest implements Runnable{
 		//Time operator. May end up removing this section as it was designed for real-time system alterations.
 		//However, it could be useful for animation purposes.
 		x += deltaTime * 0.2;
-		while(x > 500){
-			x -= 500;
-			
+		while(x > 100){
+			if (gameactive==true) {
+				try {
+					maindisplay.UpdateDisplay();
+				} catch (NullPointerException ex) {
+					System.out.print("Display Update Failed\n");
+				} 
+				
+			}
+			x -= 100;
 		}
 	}
 

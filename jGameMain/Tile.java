@@ -20,8 +20,12 @@ public abstract class Tile {
 		c = Color.GRAY;
 	}
 	
-	public Integer Count() {
+	public Integer UnitCount() {
 		return UnitContainer.size();
+	}
+	
+	public Unit UnitGet() {
+		return UnitContainer.get(0);
 	}
 	
 	public Integer CreateUnit(Unit U) { //Returns an integer value so that success or failure is reportable.
@@ -32,4 +36,6 @@ public abstract class Tile {
 			return 0; //Already a unit here
 		}
 	}
+	
+
 }

@@ -31,6 +31,7 @@ class TileListener implements ActionListener {
        //causes the console to print off this information.
        System.out.print("The tile you have selected is at "+ Integer.toString(xloc)+", "+Integer.toString(yloc)+".\n");
        System.out.print("This tile is a " + tileref.TileName + ".\n");
+       //con.maindisplay.UpdateDisplay();
        
        
        
@@ -39,7 +40,7 @@ class TileListener implements ActionListener {
        user = con.host;
        currPlayer = con.currentGame.getCurrentPlayer(); //This tells whose turn it is currently.
        if (user==currPlayer) {
-    	   System.out.print("It is your turn.");
+    	   System.out.print("It is your turn, player "+ currPlayer.PlayerID);
     	   checkturn = true;
        }else {
     	   System.out.print("It is not your turn.\n");
@@ -50,11 +51,17 @@ class TileListener implements ActionListener {
        
        actionqueued = user.actionqueued;
        
-       if(!actionqueued | !checkturn){
-    	   //If either no action is queued, or it is not your turn, then display tile info on button click.
+       if(!actionqueued){
+    	   //If no action is queued then display tile info on button click.
     	   con.maindisplay.UpdateSidePanel(tileref);
     	   currPlayer.selectTile(xloc,yloc);
     	   //display panel logic goes here
+       } else if(user.order_move == true) {
+    	   //Unit movement logic
+       } else if (user.order_rangeattack == true){
+    	   //Ranged attack logic
+       } else if (user.order_build == true) {
+    	   //Building Logic
        }
        
        

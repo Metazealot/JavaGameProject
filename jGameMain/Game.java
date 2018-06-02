@@ -14,7 +14,7 @@ public class Game {
 		for(int x = 0; x < players.size(); x++){ 
 			turnorder.add(players.get(x));
 		}
-		
+		turnorder.get(0).turnOn();
 		Width = 20;
 		Height = 20;
 		if (W != 0) {
@@ -38,7 +38,9 @@ public class Game {
 	
 	public void cycleturn() {
 		Player tempplayer = turnorder.removeFirst();
+		tempplayer.turnOff();
 		turnorder.addLast(tempplayer);
+		turnorder.get(0).turnOn();
 	}
 	
 }

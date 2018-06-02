@@ -24,26 +24,19 @@ public class Display {
 	
 	JFrame frame;
     JPanel mainPanel;
-    JPanel titlePanel;
     JPanel comboBoxPane;
+    JPanel cards;
     JPanel menuPanel;
+    JPanel titlePanel;
     JPanel settingsPanel;
+    JPanel settingsPanel2;
     JPanel multiPanel;
     JPanel lobbyPanel;
     JPanel gamePanel;
-    JPanel settingsPanel2;
-    JPanel cards;
-    
-    JLabel[] players;
-    JLabel titleLabel;
-    JLabel nameLabel;
-	JTextArea tiledesc;
-	JTextArea unitdesc;
     
     JPanel TOPpanel;	//Three sections for main game display
     JPanel MIDDLEpanel;
     JPanel BOTTOMpanel;
-    
     JPanel TOPL; //Dropdown Menu
     JPanel TOPR; //Resource Bar
     JPanel MIDDLEL; //Icon Displays
@@ -52,9 +45,17 @@ public class Display {
     JPanel BOTTOMR; //Command Card
     JPanel TILEINFO; //Shows current tile information
     JPanel UNITINFO; //Shows unit on currently selected tile
-    JScrollPane boardscroller;
     JPanel boardpanel;
     JPanel lobbylist;
+    
+    JScrollPane boardscroller;
+    
+    JLabel titleLabel;
+    JLabel nameLabel;
+    JLabel[] players;
+	JTextArea tiledesc;
+	JTextArea unitdesc;
+	JTextArea warningbox;
     
     JButton[][] gamebuttons;
     TileListener buttonlisteners[][];
@@ -411,6 +412,7 @@ public class Display {
 						cardindex.show(cards, MAINMENUPANEL);
 						con.currentGame = null;
 						displayclear();
+						con.gameactive = false;
 					}
 				});
 				TOPL.add(quit);
@@ -431,6 +433,24 @@ public class Display {
 					}
 				});
 				TOPL.add(SpawnInf);
+				
+				JButton MoveUnit=new JButton("Move Unit");    
+				MoveUnit.setBounds(100,100,140, 40);
+				MoveUnit.setActionCommand("action_move");
+				MoveUnit.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						if (con.host.yourturn == true) {
+							if (con.host.actionqueued == true) {
+								con.host.clearorders();
+								//con.host.setorder(1);
+							}
+							//con.host.actionqueued = true;
+						} else {
+							System.out.print("It is not your turn.");
+						}
+					}
+				});
+				BOTTOMR.add(MoveUnit);
 				
 		//Background mouse detection setup and frame config
 		        
@@ -491,9 +511,9 @@ public class Display {
 	        {
 
 		    	try {
-		    		String tiletext = B.tileArray[x][y].TileSymbol;
+		    		//String tiletext = B.tileArray[x][y].TileSymbol;
 		    		Color c = B.tileArray[x][y].c;
-		        	gamebuttons[x][y] = new JButton(tiletext);
+		        	gamebuttons[x][y] = new JButton();
 		        	gamebuttons[x][y].setBackground(c);
 		        	gamebuttons[x][y].setForeground(Color.BLACK);
 		    	} catch (NullPointerException ex) {
@@ -512,14 +532,42 @@ public class Display {
 	}
 	
 	public void UpdateSidePanel(Tile T) {
-		Integer UnitCount = T.Count();
+		Integer UnitCount = T.UnitCount();
 		if(UnitCount==0) {
 			unitdesc.setText("No Units on this Tile");
 		}else {
 			Unit U = T.UnitContainer.get(0);
-			unitdesc.setText(U.UnitName + "\n"+U.UnitDesc);
+			unitdesc.setText(U.UnitName + "\n"+U.UnitDesc + "\n\nHealth: " + Integer.toString(U.HealthCurrent)+ "/" + Integer.toString(U.HealthMax));
 		}
 		tiledesc.setText(T.TileName +"\n"+T.TileDesc);
+	}
+	
+	public void UpdateDisplay() {
+		Board B = con.currentGame.gameBoard;
+		int W = con.currentGame.Width;
+		int H = con.currentGame.Height;
+	    for(int x = 0; x < W; x++)
+	    {
+	        for(int y = 0; y < H; y++)
+	        {
+
+		    	try {
+		    		Tile T = B.tileArray[x][y];
+		    		JButton N = gamebuttons[x][y];
+		    		String tiletext = T.TileSymbol;
+		    		Unit U;
+		    		if (T.UnitCount() != 0) {
+		    			U = T.UnitGet();
+		    			tiletext = U.UnitSymbol;
+		    			String lifeC = Integer.toString(U.HealthCurrent);
+		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
+		    			N.setFont(new Font("Verdana",1,12));
+		    		}
+		    	} catch (NullPointerException ex) {
+
+		    	}
+	        }
+	    }
 	}
 	
 	public void displayclear(){
