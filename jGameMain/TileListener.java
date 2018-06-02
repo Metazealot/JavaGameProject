@@ -10,6 +10,9 @@ class TileListener implements ActionListener {
 	Player currPlayer;
 	Player user;
 	Boolean checkturn;
+	Boolean actionqueued;
+	Tile tileref;
+	
     public void setInfo(Integer xin, Integer yin, Conquest conin){
     	xloc = xin;
     	yloc = yin;
@@ -18,7 +21,12 @@ class TileListener implements ActionListener {
     
     public void actionPerformed(ActionEvent e)
     {
-       Tile tileref = con.currentGame.gameBoard.tileArray[xloc][yloc];
+		try {
+			tileref = con.currentGame.gameBoard.tileArray[xloc][yloc];
+		} catch (NullPointerException ex) {
+			System.out.print("No Tile Exists.");
+		}
+		
        //Temporary console visualization to determine that this is reading the correct values. Clicking a button on the display
        //causes the console to print off this information.
        System.out.print("The tile you have selected is at "+ Integer.toString(xloc)+", "+Integer.toString(yloc)+".\n");
@@ -38,6 +46,14 @@ class TileListener implements ActionListener {
     	   System.out.print("User is " + user.username);
     	   System.out.print(", current turn player is " + currPlayer.username);
     	   checkturn = false;
+       }
+       
+       actionqueued = user.actionqueued;
+       
+       if(!actionqueued | !checkturn){
+    	   //If either no action is queued, or it is not your turn, then display tile info on button click.
+    	   con.maindisplay.UpdateSidePanel(tileref);
+    	   //display panel logic goes here
        }
        
        

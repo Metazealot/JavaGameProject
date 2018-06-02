@@ -1,8 +1,5 @@
 package jGameMain;
-import java.awt.Color;
 import java.util.*;
-
-import javax.swing.JButton;
 
 public class Game {
 	

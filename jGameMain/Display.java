@@ -22,6 +22,7 @@ public class Display {
 	
 	JFrame frame;
     JPanel mainPanel;
+    JPanel titlePanel;
     JPanel comboBoxPane;
     JPanel menuPanel;
     JPanel settingsPanel;
@@ -30,10 +31,12 @@ public class Display {
     JPanel gamePanel;
     JPanel settingsPanel2;
     JPanel cards;
+    
     JLabel[] players;
     JLabel titleLabel;
-    JLabel tiledesc;
-    JLabel unitdesc;
+    JLabel nameLabel;
+	JTextArea tiledesc;
+	JTextArea unitdesc;
     
     JPanel TOPpanel;	//Three sections for main game display
     JPanel MIDDLEpanel;
@@ -67,6 +70,8 @@ public class Display {
 				con = conin;
 				frame = new JFrame("Conquest");
 				//frame is the game window itself
+				tiledesc = new JTextArea(15,15);
+				unitdesc = new JTextArea(15,15);
 
 				mainPanel = (JPanel) frame.getContentPane();
 				mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -123,9 +128,14 @@ public class Display {
 				TILEINFO.setPreferredSize(new Dimension(200, 250));
 				TILEINFO.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				TILEINFO.setBorder(BorderFactory.createLineBorder(Color.black));
+				
+				tiledesc.setEditable(false);
+				unitdesc.setEditable(false);
+
 				UNITINFO.setPreferredSize(new Dimension(200, 250));
 				UNITINFO.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				UNITINFO.setBorder(BorderFactory.createLineBorder(Color.black));
+				UNITINFO.add(unitdesc);
 				MIDDLEL.add(TILEINFO);
 				MIDDLEL.add(UNITINFO);
 				MIDDLEL.setLayout(new BoxLayout(MIDDLEL, BoxLayout.Y_AXIS));
@@ -189,7 +199,7 @@ public class Display {
 		        
 		//Main Menu       
 				
-		        JPanel titlePanel = new JPanel();
+		        titlePanel = new JPanel();
 				titleLabel = new JLabel("CONQUEST");
 				titlePanel.setBorder(BorderFactory.createLineBorder(Color.black));
 				titleLabel.setFont(new Font("Verdana",1,20));
@@ -198,7 +208,7 @@ public class Display {
 				titlePanel.setPreferredSize(new Dimension(600, 50));
 				titlePanel.setMaximumSize(new Dimension(600, 50));
 				menuPanel.add(titlePanel);
-				JLabel nameLabel = new JLabel("Username: " + username);
+				nameLabel = new JLabel("Username: " + username);
 				nameLabel.setFont(new Font("Verdana",1,14));
 				menuPanel.add(nameLabel);
 				nameLabel.setAlignmentX(0.5f);
@@ -387,6 +397,9 @@ public class Display {
 				
 		//Game Page
 				
+
+				TILEINFO.add(tiledesc);
+				UNITINFO.add(unitdesc);
 				
 				JButton quit=new JButton("Quit");    
 				quit.setBounds(100,100,140, 40);
@@ -478,8 +491,14 @@ public class Display {
 	    }
 	}
 	
-	public void Update() {
-		
+	public void UpdateSidePanel(Tile T) {
+		Integer UnitCount = T.UnitContainer.length;
+		if(UnitCount==0) {
+			unitdesc.setText("");
+		}else {
+			//Show unit description
+		}
+		tiledesc.setText(T.TileName +"\n"+T.TileDesc);
 	}
 	
 	private class MouseControl extends MouseAdapter{
