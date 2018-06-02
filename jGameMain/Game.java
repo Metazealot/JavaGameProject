@@ -3,22 +3,18 @@ import java.util.*;
 
 public class Game {
 	
-	Player[] players;
+	LinkedList<Player> players, turnorder;
 	Integer Width;
 	Integer Height;
 	Board gameBoard;
-	LinkedList<Player> turnorder;
 	
-	public Game (Player[] playerArr, Conquest con, Integer W, Integer H) {
-		players = playerArr;
+	public Game (LinkedList<Player> playerList, Conquest con, Integer W, Integer H) {
+		players = playerList;
 		turnorder = new LinkedList<Player>();
-		for(int p = 0; p < 4; p++) {
-    		try {
-    			turnorder.add(players[p]);
-    		} catch (NullPointerException ex) {
-
-    		}
+		for(int x = 0; x < players.size(); x++){ 
+			turnorder.add(players.get(x));
 		}
+		
 		Width = 20;
 		Height = 20;
 		if (W != 0) {

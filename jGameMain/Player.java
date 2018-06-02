@@ -7,11 +7,17 @@ public class Player {
     Double resource3 = 0.0;
     Boolean AI;
     Boolean actionqueued;
+    Integer[] Tileselected;
     
     public Player(String u) {
     	username = u;
     	actionqueued = false;
+    	Tileselected = new Integer[]{0,0};
     }
-
+    
+    public void selectTile(Integer x, Integer y) {
+    	Tileselected = new Integer[] {x,y};
+    }
+    
     
 }

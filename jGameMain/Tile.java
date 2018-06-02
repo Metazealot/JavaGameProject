@@ -23,4 +23,13 @@ public abstract class Tile {
 	public Integer Count() {
 		return UnitContainer.size();
 	}
+	
+	public Integer CreateUnit(Unit U) { //Returns an integer value so that success or failure is reportable.
+		if (UnitContainer.size() == 0) {
+			UnitContainer.add(U);
+			return 1; //Empty tile
+		} else {
+			return 0; //Already a unit here
+		}
+	}
 }

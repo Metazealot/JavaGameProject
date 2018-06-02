@@ -1,6 +1,7 @@
 package jGameMain;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import java.awt.image.BufferStrategy;
 import javax.swing.*;
 import java.io.*;
@@ -86,7 +87,7 @@ public class Conquest implements Runnable{
 		currentLobby = new Lobby (host, this);
 	}
 	
-	public void StartGame(Player[] playerArr) {
+	public void StartGame(LinkedList<Player> playerList) {
 		try {
 		    FileReader reader = new FileReader(configFile);
 		    Properties props = new Properties();
@@ -101,7 +102,7 @@ public class Conquest implements Runnable{
 		} catch (IOException ex) {
 			System.out.print("I/O Error");
 		}		
-		currentGame = new Game (playerArr, this, GameWidth, GameHeight);
+		currentGame = new Game (playerList, this, GameWidth, GameHeight);
 	}
 
 	

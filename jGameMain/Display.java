@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import javax.swing.*;
+import jGameMain.Units.*;
+
 
 import java.io.*;
 import java.util.Properties;
@@ -386,7 +388,7 @@ public class Display {
 					public void actionPerformed(ActionEvent e) {
 						cardindex.show(cards, GAMEPANEL);
 						try {
-							con.StartGame(con.currentLobby.playerArr);
+							con.StartGame(con.currentLobby.playerList);
 						} catch (NullPointerException ex) {
 							System.out.print("No Lobby Exists.");
 						}
@@ -412,6 +414,23 @@ public class Display {
 					}
 				});
 				TOPL.add(quit);
+				
+				JButton SpawnInf=new JButton("Spawn Infantry");    
+				SpawnInf.setBounds(100,100,140, 40);
+				SpawnInf.setActionCommand("createunitinfantry");
+				SpawnInf.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						Tile T = con.currentGame.gameBoard.tileArray[con.host.Tileselected[0]][con.host.Tileselected[1]];
+						Integer result = T.CreateUnit(new Infantry());
+						if (result==1) {
+							System.out.print("Success");
+						} else {
+							System.out.print("Failure");
+						}
+						UpdateSidePanel(T);
+					}
+				});
+				TOPL.add(SpawnInf);
 				
 		//Background mouse detection setup and frame config
 		        

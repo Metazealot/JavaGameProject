@@ -1,13 +1,14 @@
 package jGameMain;
+import java.util.*;
 
 public class Lobby {
 	
-	Player[] playerArr;
+	LinkedList<Player> playerList;
 	
 	public Lobby (Player Host, Conquest con) {
-		playerArr = new Player[4];
-		playerArr[0] = Host;
-		con.maindisplay.updateLobby(playerArr);
+		playerList = new LinkedList<Player>();
+		playerList.add(Host);
+		con.maindisplay.updateLobby(playerList.toArray(new Player [4]));
 		
 
 
@@ -19,4 +20,8 @@ public class Lobby {
 		
 	}
 	
+	public void addAI() {
+		playerList.add(new Player("AI"));
+		
+	}
 }

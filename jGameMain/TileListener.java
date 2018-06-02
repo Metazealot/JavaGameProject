@@ -53,6 +53,7 @@ class TileListener implements ActionListener {
        if(!actionqueued | !checkturn){
     	   //If either no action is queued, or it is not your turn, then display tile info on button click.
     	   con.maindisplay.UpdateSidePanel(tileref);
+    	   currPlayer.selectTile(xloc,yloc);
     	   //display panel logic goes here
        }
        

@@ -1,6 +1,5 @@
 package jGameMain;
 import java.util.Random;
-
 import jGameMain.Tiles.*;
 
 public class Board {
