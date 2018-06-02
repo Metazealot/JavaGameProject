@@ -32,6 +32,8 @@ public class Display {
     JPanel cards;
     JLabel[] players;
     JLabel titleLabel;
+    JLabel tiledesc;
+    JLabel unitdesc;
     
     JPanel TOPpanel;	//Three sections for main game display
     JPanel MIDDLEpanel;
@@ -50,17 +52,19 @@ public class Display {
     JPanel lobbylist;
     
     JButton[][] gamebuttons;
+    TileListener buttonlisteners[][];
     
     CardLayout cardindex;
 	Canvas canvas;
 	String username;
 	File configFile;
 	BufferStrategy bufferStrategy;
+	Conquest con;
 	
-	public Display(Conquest con){
+	public Display(Conquest conin){
 		
 		//Main Frame Setup
-
+				con = conin;
 				frame = new JFrame("Conquest");
 				//frame is the game window itself
 
@@ -444,7 +448,8 @@ public class Display {
 	
 	public void Instantiate(int W, int H, Board B) {
 		boardpanel.removeAll();
-		gamebuttons = new TileButton[W][H];
+		gamebuttons = new JButton[W][H];
+		buttonlisteners = new TileListener[W][H];
 		
 		boardpanel.setLayout(new GridLayout(W, H));
 	    for(int x = 0; x < W; x++)
@@ -453,19 +458,21 @@ public class Display {
 	        {
 
 		    	try {
-		    		String tiletext = B.tileArray[x][y].TileName;
+		    		String tiletext = B.tileArray[x][y].TileSymbol;
 		    		Color c = B.tileArray[x][y].c;
-		        	gamebuttons[x][y] = new TileButton(tiletext,x,y);
+		        	gamebuttons[x][y] = new JButton(tiletext);
 		        	gamebuttons[x][y].setBackground(c);
 		        	gamebuttons[x][y].setForeground(Color.BLACK);
 		    	} catch (NullPointerException ex) {
-		    		gamebuttons[x][y] = new TileButton("Unknown",x,y);
+		    		gamebuttons[x][y] = new JButton("U");
 		    		gamebuttons[x][y].setBackground(Color.cyan);
 		        	gamebuttons[x][y].setForeground(Color.BLACK);
 		    	}
 	        	
 	        	
-	        	gamebuttons[x][y].addActionListener(new TileListener());
+		    	buttonlisteners[x][y] = new TileListener();
+		    	buttonlisteners[x][y].setInfo(x,y, con);
+		    	gamebuttons[x][y].addActionListener(buttonlisteners[x][y]);
 	            boardpanel.add(gamebuttons[x][y]);
 	        }
 	    }
@@ -477,14 +484,6 @@ public class Display {
 	
 	private class MouseControl extends MouseAdapter{
 	      
-	   }
-	
-	private class TileListener implements ActionListener
-	{
-	    public void actionPerformed(ActionEvent e)
-	    {
-	        //Some code to change a specific button
-	    }
-	}
+	  }
 	
 }

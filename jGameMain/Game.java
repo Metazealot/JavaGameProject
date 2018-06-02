@@ -1,4 +1,8 @@
 package jGameMain;
+import java.awt.Color;
+import java.util.*;
+
+import javax.swing.JButton;
 
 public class Game {
 	
@@ -6,9 +10,18 @@ public class Game {
 	Integer Width;
 	Integer Height;
 	Board gameBoard;
+	LinkedList<Player> turnorder;
 	
 	public Game (Player[] playerArr, Conquest con, Integer W, Integer H) {
 		players = playerArr;
+		turnorder = new LinkedList<Player>();
+		for(int p = 0; p < 4; p++) {
+    		try {
+    			turnorder.add(players[p]);
+    		} catch (NullPointerException ex) {
+
+    		}
+		}
 		Width = 20;
 		Height = 20;
 		if (W != 0) {
@@ -19,5 +32,15 @@ public class Game {
 		}
 		gameBoard = new Board(Width,Height);
 		con.maindisplay.Instantiate(Width, Height, gameBoard);
+		
 	}
+	
+	public Player GetCurrentPlayer() {
+		try {
+			return turnorder.get(0);
+		} catch (NullPointerException ex) {
+			return new Player("Default");
+		}
+	}
+	
 }

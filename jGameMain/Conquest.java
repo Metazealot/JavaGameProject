@@ -30,6 +30,7 @@ public class Conquest implements Runnable{
     Integer FrameHeight;
     Integer GameWidth;
     Integer GameHeight;
+    Player host;
 	
 	public Conquest(){
 		//This is the constructor, activated when a Conquest class object is instantiated.
@@ -44,6 +45,7 @@ public class Conquest implements Runnable{
 		FrameHeight = 710;
 		GameWidth = 20;
 		GameHeight = 20;
+		
 		
 		try {
 		    FileReader reader = new FileReader(configFile);
@@ -80,9 +82,8 @@ public class Conquest implements Runnable{
 			System.out.print("I/O Error");
 		}
 		
-		Player hostplayer = new Player();
-		hostplayer.username = username;
-		currentLobby = new Lobby (hostplayer, this);
+		host = new Player(username);
+		currentLobby = new Lobby (host, this);
 	}
 	
 	public void StartGame(Player[] playerArr) {
