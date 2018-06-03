@@ -58,6 +58,7 @@ public class Display {
 	JTextArea warningbox;
     
     JButton[][] gamebuttons;
+    JButton oldTileRef;
     TileListener buttonlisteners[][];
     
     CardLayout cardindex;
@@ -422,14 +423,19 @@ public class Display {
 				SpawnInf.setActionCommand("createunitinfantry");
 				SpawnInf.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
-						Tile T = con.currentGame.gameBoard.tileArray[con.host.Tileselected[0]][con.host.Tileselected[1]];
-						Integer result = T.CreateUnit(new Infantry());
-						if (result==1) {
-							System.out.print("Success");
-						} else {
-							System.out.print("Failure");
+						try {
+							Tile T = con.host.Tileselected;
+							Integer result = T.CreateUnit(new Infantry());
+							T.UnitContainer.get(0).setOwner(con.host);
+							if (result==1) {
+								System.out.print("Success");
+							} else {
+								System.out.print("Failure");
+							}
+							UpdateSidePanel(T);
+						} catch (NullPointerException ex) {
+							//no tile was selected
 						}
-						UpdateSidePanel(T);
 					}
 				});
 				TOPL.add(SpawnInf);
@@ -442,15 +448,35 @@ public class Display {
 						if (con.host.yourturn == true) {
 							if (con.host.actionqueued == true) {
 								con.host.clearorders();
-								//con.host.setorder(1);
 							}
-							//con.host.actionqueued = true;
+							if (con.host.Tileselected.UnitCount() != 0){ //A unit is present
+								Unit U = con.host.Tileselected.UnitGet();
+								if (U.ownerID == con.host.PlayerID) { //Unit is owned by player
+									con.host.setorder(1);
+									con.host.selectUnit(U);
+									System.out.print("Click a tile to move this unit to.");
+								} else {
+									System.out.print("You do not own that unit. Unit's owner is " + Integer.toString(con.host.Tileselected.UnitGet().ownerID) );//+ ". Your ID is " + Integer.toString(con.host.PlayerID));
+								}
+							} else {
+								System.out.print("There is no unit to move at this location.");
+							}
 						} else {
 							System.out.print("It is not your turn.");
 						}
 					}
 				});
 				BOTTOMR.add(MoveUnit);
+				
+				JButton CancelOrder=new JButton("Cancel Command");    
+				CancelOrder.setBounds(100,100,140, 40);
+				CancelOrder.setActionCommand("cancel_move");
+				CancelOrder.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						con.host.clearorders();
+					}
+				});
+				BOTTOMR.add(CancelOrder);
 				
 		//Background mouse detection setup and frame config
 		        
@@ -503,7 +529,6 @@ public class Display {
 		boardpanel.removeAll();
 		gamebuttons = new JButton[W][H];
 		buttonlisteners = new TileListener[W][H];
-		
 		boardpanel.setLayout(new GridLayout(W, H));
 	    for(int x = 0; x < W; x++)
 	    {
@@ -516,10 +541,12 @@ public class Display {
 		        	gamebuttons[x][y] = new JButton();
 		        	gamebuttons[x][y].setBackground(c);
 		        	gamebuttons[x][y].setForeground(Color.BLACK);
+		        	gamebuttons[x][y].setBorder(BorderFactory.createLineBorder(Color.black));
 		    	} catch (NullPointerException ex) {
 		    		gamebuttons[x][y] = new JButton("U");
 		    		gamebuttons[x][y].setBackground(Color.cyan);
 		        	gamebuttons[x][y].setForeground(Color.BLACK);
+		        	gamebuttons[x][y].setBorder(BorderFactory.createLineBorder(Color.gray));
 		    	}
 	        	
 	        	
@@ -532,14 +559,26 @@ public class Display {
 	}
 	
 	public void UpdateSidePanel(Tile T) {
+		try {
+			oldTileRef.setBorder(BorderFactory.createLineBorder(Color.black));
+		} catch (NullPointerException ex) {
+			//this is fine
+		}
+		oldTileRef = gamebuttons[T.xloc][T.yloc]; //overwrite the old reference so that the next time this is called,
+		//the color will be overwritten of the last selected button.
+		gamebuttons[T.xloc][T.yloc].setBorder(BorderFactory.createLineBorder(Color.white));
 		Integer UnitCount = T.UnitCount();
 		if(UnitCount==0) {
 			unitdesc.setText("No Units on this Tile");
 		}else {
 			Unit U = T.UnitContainer.get(0);
-			unitdesc.setText(U.UnitName + "\n"+U.UnitDesc + "\n\nHealth: " + Integer.toString(U.HealthCurrent)+ "/" + Integer.toString(U.HealthMax));
+			unitdesc.setText(U.UnitName + "\n"+U.UnitDesc + "\n" + 
+			"\nHealth: " + Integer.toString(U.HealthCurrent)+ "/" + Integer.toString(U.HealthMax) +
+			"\nArmor: " + Integer.toString(U.Armor) +
+			"\nMovement Range: " + Double.toString(U.MoveRange) );
 		}
 		tiledesc.setText(T.TileName +"\n"+T.TileDesc);
+
 	}
 	
 	public void UpdateDisplay() {
@@ -562,9 +601,11 @@ public class Display {
 		    			String lifeC = Integer.toString(U.HealthCurrent);
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
+		    		} else {
+		    			N.setText("");
 		    		}
 		    	} catch (NullPointerException ex) {
-
+		    		
 		    	}
 	        }
 	    }

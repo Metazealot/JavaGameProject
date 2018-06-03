@@ -1,4 +1,5 @@
 package jGameMain;
+import java.util.Random;
 
 public class Player {
     String username = "Player";
@@ -7,18 +8,20 @@ public class Player {
     Double resource3 = 0.0;
     Boolean AI = false;
     Boolean yourturn, actionqueued, order_move, order_rangeattack, order_build = false;
-    Integer[] Tileselected;
+    Tile Tileselected;
     Integer PlayerID = 0;
+    Unit Unitselected;
     
     
     public Player(String u) {
     	username = u;
     	actionqueued = false;
-    	Tileselected = new Integer[]{0,0};
+		Random rand = new Random();
+		PlayerID = rand.nextInt(10000);
     }
     
-    public void selectTile(Integer x, Integer y) {
-    	Tileselected = new Integer[] {x,y};
+    public void selectTile(Tile T) {
+    	Tileselected = T;
     }
     
     public void SetID(Integer v) {
@@ -44,5 +47,9 @@ public class Player {
         	actionqueued = true;
         	order_move = true;
     	}
+    }
+    
+    public void selectUnit(Unit U) {
+    	Unitselected = U;
     }
 }

@@ -31,7 +31,6 @@ class TileListener implements ActionListener {
        //causes the console to print off this information.
        System.out.print("The tile you have selected is at "+ Integer.toString(xloc)+", "+Integer.toString(yloc)+".\n");
        System.out.print("This tile is a " + tileref.TileName + ".\n");
-       //con.maindisplay.UpdateDisplay();
        
        
        
@@ -54,18 +53,45 @@ class TileListener implements ActionListener {
        if(!actionqueued){
     	   //If no action is queued then display tile info on button click.
     	   con.maindisplay.UpdateSidePanel(tileref);
-    	   currPlayer.selectTile(xloc,yloc);
+    	   tileref.selected = true;
+    	   currPlayer.selectTile(tileref);
     	   //display panel logic goes here
        } else if(user.order_move == true) {
     	   //Unit movement logic
+    	   Double distance = tileDistance(currPlayer.Tileselected,tileref);
+    	   if (distance !=0) {
+    		   if (distance <= currPlayer.Unitselected.MoveRange) {
+    			   if (tileref.UnitCount() == 0){
+    				   tileref.UnitAdd(currPlayer.Tileselected.UnitClear());
+    				   currPlayer.clearorders();
+    				   con.maindisplay.UpdateSidePanel(tileref);
+    			   } else {
+    				   System.out.print("There is already a unit there.");
+    				   //Attack logic will eventually go here
+    			   }
+    		   } else {
+    			   System.out.print("That is too far away to move!"); 
+    		   }
+    	   } else {
+    		   System.out.print("Cannot move to the same tile");
+    	   }
+    	   
        } else if (user.order_rangeattack == true){
     	   //Ranged attack logic
        } else if (user.order_build == true) {
     	   //Building Logic
        }
        
-       
+
        
     }
-
+    
+    public Double tileDistance(Tile A, Tile B) {
+   		Double diffx, diffy = 0.0;
+   		diffx = ((double)A.xloc-(double)B.xloc);
+   		if (diffx<0) { diffx = diffx * -1.0; }
+   		diffy = ((double)A.yloc-(double)B.yloc);
+   		if (diffy<0) { diffy = diffy * -1.0; }
+   		return (diffx+diffy);
+    }
 }

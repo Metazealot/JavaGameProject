@@ -150,7 +150,7 @@ public class Conquest implements Runnable{
 		//Time operator. May end up removing this section as it was designed for real-time system alterations.
 		//However, it could be useful for animation purposes.
 		x += deltaTime * 0.2;
-		while(x > 100){
+		while(x > 50){
 			if (gameactive==true) {
 				try {
 					maindisplay.UpdateDisplay();
@@ -159,7 +159,7 @@ public class Conquest implements Runnable{
 				} 
 				
 			}
-			x -= 100;
+			x -= 50;
 		}
 	}
 

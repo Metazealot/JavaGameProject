@@ -4,6 +4,7 @@ import java.util.*;
 public class Game {
 	
 	LinkedList<Player> players, turnorder;
+	LinkedList<Unit> Units;
 	Integer Width;
 	Integer Height;
 	Board gameBoard;

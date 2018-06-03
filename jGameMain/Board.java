@@ -24,6 +24,7 @@ public class Board {
         		}else {
         			tileArray[x][y] = new Water_Tile();
         		}
+        		tileArray[x][y].setCoord(x, y);
         	}
 		}
 	

@@ -10,6 +10,7 @@ public class Infantry extends Unit {
 		HealthMax = 50;
 		HealthCurrent = 50;
 		Armor = 1;
+		MoveRange = 4.0;
 
 	}
 }
