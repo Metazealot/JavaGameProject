@@ -7,6 +7,7 @@ import jGameMain.Unit;
 public class Grassland_Tile extends Tile {
 	
 	public Grassland_Tile() {
+		TileID = 0;
 		TileSymbol = "G";
 		TileName = "Grassland";
 		TileDesc = "Gently rolling grasslands.\nOffers little defensive value.\nExcellent for farmland.";

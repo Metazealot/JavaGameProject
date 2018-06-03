@@ -39,12 +39,12 @@ class TileListener implements ActionListener {
        user = con.host;
        currPlayer = con.currentGame.getCurrentPlayer(); //This tells whose turn it is currently.
        if (user==currPlayer) {
-    	   System.out.print("It is your turn, player "+ currPlayer.PlayerID);
+    	   System.out.print("It is your turn, player "+ currPlayer.PlayerID + "\n");
     	   checkturn = true;
        }else {
     	   System.out.print("It is not your turn.\n");
     	   System.out.print("User is " + user.username);
-    	   System.out.print(", current turn player is " + currPlayer.username);
+    	   System.out.print(", current turn player is " + currPlayer.username + "\n");
     	   checkturn = false;
        }
        
@@ -62,18 +62,23 @@ class TileListener implements ActionListener {
     	   if (distance !=0) {
     		   if (distance <= currPlayer.Unitselected.MoveRange) {
     			   if (tileref.UnitCount() == 0){
-    				   tileref.UnitAdd(currPlayer.Tileselected.UnitClear());
-    				   currPlayer.clearorders();
-    				   con.maindisplay.UpdateSidePanel(tileref);
+    				   if ((tileref.TileID !=4)&(tileref.TileID != 3)){
+    					   currPlayer.Tileselected.MoveUnit(tileref);
+        				   currPlayer.clearorders();
+        				   con.maindisplay.UpdateSidePanel(tileref);
+        				   currPlayer.selectTile(tileref);
+    				   } else {
+    					   System.out.print("You cannot move into that tile.\n");  
+    				   }
     			   } else {
-    				   System.out.print("There is already a unit there.");
-    				   //Attack logic will eventually go here
+    				   System.out.print("There is already a unit there.\n");
+    				   //Attack move logic will eventually go here
     			   }
     		   } else {
-    			   System.out.print("That is too far away to move!"); 
+    			   System.out.print("That is too far away to move!\n"); 
     		   }
     	   } else {
-    		   System.out.print("Cannot move to the same tile");
+    		   System.out.print("Cannot move to the same tile.\n");
     	   }
     	   
        } else if (user.order_rangeattack == true){
@@ -94,4 +99,11 @@ class TileListener implements ActionListener {
    		if (diffy<0) { diffy = diffy * -1.0; }
    		return (diffx+diffy);
     }
+    
+    public Boolean path(Tile origin, Tile destination) {
+    	
+    	
+    	return false;
+    }
+    
 }

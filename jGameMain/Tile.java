@@ -8,6 +8,7 @@ public abstract class Tile {
 	public String TileName;
 	public String TileDesc;
 	public Integer Defense;
+	public Integer TileID;
 	public ArrayList<Unit> UnitContainer;
 	public Color c;
 	public Integer xloc,yloc;
@@ -36,15 +37,23 @@ public abstract class Tile {
 		return U;
 	}
 	
+	public void MoveUnit(Tile T) {
+		Unit U = UnitClear();
+		T.UnitAdd(U);
+	}
+	
 	public void UnitAdd(Unit U) {
 		UnitContainer.add(U);
 	}
 	
 	public Integer CreateUnit(Unit U) { //Returns an integer value so that success or failure is reportable.
 		if (UnitContainer.size() == 0) {
-			UnitContainer.add(U);
-
-			return 1; //Empty tile
+			if ((TileID !=4)&(TileID != 3)){
+				UnitContainer.add(U);
+				return 1; //Placement success
+			} else {
+				return 0; //Tile is mountains or water
+			}
 		} else {
 			return 0; //Already a unit here
 		}

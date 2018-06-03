@@ -7,6 +7,7 @@ import jGameMain.Unit;
 public class Forest_Tile extends Tile {
 	
 	public Forest_Tile() {
+		TileID = 1;
 		TileSymbol = "F";
 		TileName = "Forest";
 		TileDesc = "Heavily wooded forest region.\n Provides modest defense.\nYields high production.";

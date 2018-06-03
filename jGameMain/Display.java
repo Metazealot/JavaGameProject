@@ -426,9 +426,9 @@ public class Display {
 						try {
 							Tile T = con.host.Tileselected;
 							Integer result = T.CreateUnit(new Infantry());
-							T.UnitContainer.get(0).setOwner(con.host);
 							if (result==1) {
 								System.out.print("Success");
+								T.UnitContainer.get(0).setOwner(con.host);
 							} else {
 								System.out.print("Failure");
 							}

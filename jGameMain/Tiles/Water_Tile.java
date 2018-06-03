@@ -7,6 +7,7 @@ import jGameMain.Unit;
 public class Water_Tile extends Tile {
 	
 	public Water_Tile() {
+		TileID = 3;
 		TileSymbol = "W";
 		TileName = "Water";
 		TileDesc = "A body of water.\nImpassible on foot.\nUse boats to cross.";
