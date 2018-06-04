@@ -7,7 +7,8 @@ import javax.swing.*;
 import java.io.*;
 import java.util.Properties;
 
-//this version is updated
+//to compile into an executable, run the following in a command line in the current folder:
+// jar -cvmf manifest.txt conquest.jar *.class
 
 public class Conquest implements Runnable{
 	
@@ -116,8 +117,6 @@ public class Conquest implements Runnable{
 	private double x = 0;
    
 	public void run(){
-      
-		//Primary runnable. This initiates action of the Conquest class
 		long beginLoopTime;
 		long endLoopTime;
 		long currentUpdateTime = System.nanoTime();
