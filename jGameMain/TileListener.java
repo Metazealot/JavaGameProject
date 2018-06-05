@@ -66,7 +66,10 @@ class TileListener implements ActionListener {
     					   currPlayer.Tileselected.MoveUnit(tileref);
         				   currPlayer.clearorders();
         				   con.maindisplay.UpdateSidePanel(tileref);
+        				   Path MPath = new Path(currPlayer.Tileselected,tileref,con.currentGame.gameBoard);
         				   currPlayer.selectTile(tileref);
+        				   System.out.print("The pathing distance to that tile was: "+ Integer.toString(MPath.Length) +"\n");
+        				   //System.out.print("Iterations: "+ Integer.toString(MPath.Iterations) +"\n");
     				   } else {
     					   System.out.print("You cannot move into that tile.\n");  
     				   }
@@ -98,12 +101,6 @@ class TileListener implements ActionListener {
    		diffy = ((double)A.yloc-(double)B.yloc);
    		if (diffy<0) { diffy = diffy * -1.0; }
    		return (diffx+diffy);
-    }
-    
-    public Boolean path(Tile origin, Tile destination) {
-    	
-    	
-    	return false;
     }
     
 }
