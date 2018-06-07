@@ -11,7 +11,7 @@ public class Forest_Tile extends Tile {
 		TileSymbol = "F";
 		TileName = "Forest";
 		TileDesc = "Heavily wooded forest region.\n Provides modest defense.\nYields high production.";
-		Defense = 2;
+		Defense = 2.0;
 		c = new Color(50, 155, 25);
 		//RGB
 	}

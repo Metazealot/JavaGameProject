@@ -18,6 +18,7 @@ public class Path {
 		mW = B.Width;
 		mH = B.Height;
 		NodeArr = new PathNode[mW][mH];
+		TileContainer = new LinkedList<Tile>();
 
 		for (int x = 0; x < mW; x++) {
 			for (int y = 0; y < mH; y++) {
@@ -52,7 +53,7 @@ public class Path {
 				if (x<mW-1) {
 					NodeArr[x][y].AdjacentTiles.add(NodeArr[x+1][y]);
 				}
-				System.out.print("Number of Adjacencies: " + NodeArr[x][y].AdjacentTiles.size()+ "\n");
+				
 			}
 		}
 	
@@ -66,10 +67,9 @@ public class Path {
 		if (destNode.Parent != null) {
 			PathNode tracer = destNode;
 			while (tracer !=null) {
-				System.out.print("Node Location: " + tracer.x + ", " + tracer.y + "\n");
+				TileContainer.add(B.tileArray[tracer.x][tracer.y]);
 				tracer = tracer.Parent;
 				if (tracer !=originNode) {Length+=1;} else {
-				System.out.print("Origin Detected. \n");
 				}
 			}
 		} else {
@@ -92,6 +92,7 @@ public class Path {
 		LinkedList<PathNode> untested = new LinkedList<PathNode>();
 		untested.add(currNode);
 		while(!untested.isEmpty()&&(currNode!=destNode)) {
+			//System.out.print("Testing Node");
 			untested.sort(new NodeCompare());
 			while((!untested.isEmpty())&&(untested.getFirst().Checked == true)){
 				PathNode junk = untested.removeFirst();
@@ -110,14 +111,16 @@ public class Path {
 					adjNode.Parent = currNode;
 					adjNode.localgoal = pgoal;
 					adjNode.globalgoal = (adjNode.localgoal + distance(adjNode, destNode));
+
 				}
+				
 			}
 		}
 		return true;
 	}
 	
 	public double distance(PathNode a, PathNode b) {
-		return Math.sqrt((a.x-b.x)^2 + (a.y-b.y)^2);
+		return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
 	}
 	
 	public class NodeCompare implements Comparator<PathNode>{

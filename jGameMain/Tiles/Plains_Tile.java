@@ -11,7 +11,7 @@ public class Plains_Tile extends Tile {
 		TileSymbol = "P";
 		TileName = "Plains";
 		TileDesc = "Sparsely vegetated plains.\nOffers little defensive value.\nDusty and barren.";
-		Defense = 0;
+		Defense = 0.0;
 		c = new Color(200, 255, 0);
 		//RGB
 	}

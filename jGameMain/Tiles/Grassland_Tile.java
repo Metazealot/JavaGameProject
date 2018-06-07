@@ -11,7 +11,7 @@ public class Grassland_Tile extends Tile {
 		TileSymbol = "G";
 		TileName = "Grassland";
 		TileDesc = "Gently rolling grasslands.\nOffers little defensive value.\nExcellent for farmland.";
-		Defense = 0;
+		Defense = 0.0;
 		c = new Color(0, 220, 0);
 		//RGB
 	}

@@ -7,7 +7,7 @@ public abstract class Tile {
 	public String TileSymbol;
 	public String TileName;
 	public String TileDesc;
-	public Integer Defense;
+	public Double Defense;
 	public Integer TileID;
 	public ArrayList<Unit> UnitContainer;
 	public Color c;
@@ -18,7 +18,7 @@ public abstract class Tile {
 		TileSymbol = "B";
 		TileName = "Blank Tile";
 		TileDesc = "";
-		 Defense = 0;
+		 Defense = 0.0;
 		UnitContainer = new ArrayList<Unit>();
 		c = Color.GRAY;
 	}

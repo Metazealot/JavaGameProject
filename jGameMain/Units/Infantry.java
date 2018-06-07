@@ -7,10 +7,14 @@ public class Infantry extends Unit {
 		UnitName = "Infantry";
 		UnitSymbol = "IN";
 		UnitDesc = "Basic ground soldier";
-		HealthMax = 50;
-		HealthCurrent = 50;
-		Armor = 1;
+		HealthMax = 50.0;
+		HealthCurrent = 50.0;
+		Armor = 1.0;
 		MoveRange = 4.0;
+		MoveLeft = 4.0;
+		AttackRange = 1.0;
+		Ranged = false;
+		Damage = 20.0;
 
 	}
 }

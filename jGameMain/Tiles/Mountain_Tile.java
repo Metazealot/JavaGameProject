@@ -11,7 +11,7 @@ public class Mountain_Tile extends Tile {
 		TileSymbol = "M";
 		TileName = "Mountain";
 		TileDesc = "A tall mountain\nImpassible on foot.\n.";
-		Defense = 0;
+		Defense = 4.0;
 		c = new Color(100, 100, 40);
 		//RGB
 	}

@@ -379,6 +379,23 @@ public class Display {
 				});
 				lobbyPanel.add(lobbyBmain);
 				
+
+				
+				JButton BaddAI=new JButton("Add AI");    
+				BaddAI.setBounds(100,100,140, 40);
+				BaddAI.setActionCommand("addAI");
+				BaddAI.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							con.currentLobby.addAI();
+							System.out.print("AI Added.");
+						} catch (NullPointerException ex) {
+							System.out.print("No Lobby Exists.");
+						}
+					}
+				});
+				lobbyPanel.add(BaddAI);
+				
 				lobbylist = new JPanel();
 				lobbylist.setBorder(BorderFactory.createLineBorder(Color.black));
 				lobbyPanel.add(lobbylist);
@@ -397,7 +414,6 @@ public class Display {
 					}
 				});
 				lobbyPanel.add(Bstartgame);
-				
 				
 		//Game Page
 				
@@ -429,6 +445,7 @@ public class Display {
 							if (result==1) {
 								System.out.print("Success");
 								T.UnitContainer.get(0).setOwner(con.host);
+								con.currentGame.Units.add(T.UnitContainer.get(0));
 							} else {
 								System.out.print("Failure");
 							}
@@ -439,6 +456,34 @@ public class Display {
 					}
 				});
 				TOPL.add(SpawnInf);
+				
+				JButton SpawnInf2=new JButton("Spawn Hostile");    
+				SpawnInf2.setBounds(100,100,140, 40);
+				SpawnInf2.setActionCommand("createunitinfantry");
+				SpawnInf2.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							Integer result = T.CreateUnit(new Infantry());
+							if (result==1) {
+								System.out.print("Success");
+								try {
+									T.UnitContainer.get(0).setOwner(con.currentGame.players.get(1));
+								} catch (NullPointerException ex) {
+									T.UnitContainer.get(0).setOwner(con.host);
+									System.out.print("No Hostile AI was added.\n");
+								}
+								con.currentGame.Units.add(T.UnitContainer.get(0));
+							} else {
+								System.out.print("Failure");
+							}
+							UpdateSidePanel(T);
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+				TOPL.add(SpawnInf2);
 				
 				JButton MoveUnit=new JButton("Move Unit");    
 				MoveUnit.setBounds(100,100,140, 40);
@@ -467,6 +512,34 @@ public class Display {
 					}
 				});
 				BOTTOMR.add(MoveUnit);
+				
+				JButton BAttack=new JButton("Attack");    
+				BAttack.setBounds(100,100,140, 40);
+				BAttack.setActionCommand("action_attack");
+				BAttack.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						if (con.host.yourturn == true) {
+							if (con.host.actionqueued == true) {
+								con.host.clearorders();
+							}
+							if (con.host.Tileselected.UnitCount() != 0){ //A unit is present
+								Unit U = con.host.Tileselected.UnitGet();
+								if (U.ownerID == con.host.PlayerID) { //Unit is owned by player
+									con.host.setorder(2);
+									con.host.selectUnit(U);
+									System.out.print("Click a tile to attack.");
+								} else {
+									System.out.print("You do not own that unit. Unit's owner is " + Integer.toString(con.host.Tileselected.UnitGet().ownerID) );//+ ". Your ID is " + Integer.toString(con.host.PlayerID));
+								}
+							} else {
+								System.out.print("There is no unit to attack with at this location.");
+							}
+						} else {
+							System.out.print("It is not your turn.");
+						}
+					}
+				});
+				BOTTOMR.add(BAttack);
 				
 				JButton CancelOrder=new JButton("Cancel Command");    
 				CancelOrder.setBounds(100,100,140, 40);
@@ -504,10 +577,9 @@ public class Display {
 		
 	}
 	
-	public void updateLobby(Player[] playerArr) {
+	public void initLobby(Player[] playerArr) {
 		lobbylist.removeAll();
 		players = new JLabel[4];
-		
 		lobbylist.setLayout(new BoxLayout(lobbylist, BoxLayout.Y_AXIS));
 
 	    for(int y = 0; y < 4; y++) {
@@ -518,9 +590,19 @@ public class Display {
 	    	} catch (NullPointerException ex) {
 	    		players[y] = new JLabel("Empty Slot");
 	    	}
-
-            lobbylist.add(players[y]);
-	    	
+	        lobbylist.add(players[y]);
+        }
+	}
+	
+	public void updateLobby(Player[] playerArr) {
+	    for(int y = 0; y < 4; y++) {
+	    	try {
+	    		String temptext = playerArr[y].username;
+	    		players[y].setText(temptext);
+	    		players[y].setBackground(Color.cyan);
+	    	} catch (NullPointerException ex) {
+	    		players[y].setText("Empty Slot");
+	    	}
         }
 	}
 	
@@ -573,11 +655,19 @@ public class Display {
 		}else {
 			Unit U = T.UnitContainer.get(0);
 			unitdesc.setText(U.UnitName + "\n"+U.UnitDesc + "\n" + 
-			"\nHealth: " + Integer.toString(U.HealthCurrent)+ "/" + Integer.toString(U.HealthMax) +
-			"\nArmor: " + Integer.toString(U.Armor) +
-			"\nMovement Range: " + Double.toString(U.MoveRange) );
+			"\nOwner: " + U.ownerOBJ.username +
+			"\nHealth: " + decimalFixer(U.HealthCurrent)+ "/" + decimalFixer(U.HealthMax) +
+			"\nArmor: " + decimalFixer(U.Armor) +
+			"\nMovement Points: " + decimalFixer(U.MoveLeft) + "/" + decimalFixer(U.MoveRange) +
+			"\nAttack Range: " + decimalFixer(U.AttackRange) +
+			"\nDamage: " + decimalFixer(U.Damage) +
+			""
+			);
 		}
-		tiledesc.setText(T.TileName +"\n"+T.TileDesc);
+		tiledesc.setText(T.TileName +
+		"\nDefense: " + decimalFixer(T.Defense) +
+		"\n"+ T.TileDesc 
+		);
 
 	}
 	
@@ -597,13 +687,21 @@ public class Display {
 		    		Unit U;
 		    		if (T.UnitCount() != 0) {
 		    			U = T.UnitGet();
-		    			tiletext = U.UnitSymbol;
-		    			String lifeC = Integer.toString(U.HealthCurrent);
+		    			tiletext = U.UnitSymbol + " " + U.ownerOBJ.username.substring(0, 4);
+		    			String lifeC = decimalFixer(U.HealthCurrent);
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
 		    		} else {
 		    			N.setText("");
 		    		}
+		    		if (T == con.host.Tileselected) {
+		    			N.setBorder(BorderFactory.createLineBorder(Color.white));
+		    		} else {
+		    			N.setBorder(BorderFactory.createLineBorder(Color.black));
+		    		}
+		    		Color c = T.c;
+		        	N.setBackground(c);
+		    		
 		    	} catch (NullPointerException ex) {
 		    		
 		    	}
@@ -620,4 +718,11 @@ public class Display {
 	      
 	  }
 	
+	private String decimalFixer(Double inp) {
+		if (inp % 1.0 == 0.0){
+			return Integer.toString(inp.intValue());
+		} else {
+			return Double.toString(inp);
+		}
+	}
 }

@@ -42,6 +42,11 @@ public class Game {
 		tempplayer.turnOff();
 		turnorder.addLast(tempplayer);
 		turnorder.get(0).turnOn();
+		for (Unit U : Units) {
+			if(U.ownerOBJ == turnorder.get(0)){
+				U.MoveLeft = U.MoveRange;
+			}
+		}
 	}
 	
 }

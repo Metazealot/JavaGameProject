@@ -1,7 +1,10 @@
 package jGameMain;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
 
 class TileListener implements ActionListener {
 	int xloc = 0;
@@ -58,34 +61,75 @@ class TileListener implements ActionListener {
     	   //display panel logic goes here
        } else if(user.order_move == true) {
     	   //Unit movement logic
-    	   Double distance = tileDistance(currPlayer.Tileselected,tileref);
-    	   if (distance !=0) {
-    		   if (distance <= currPlayer.Unitselected.MoveRange) {
-    			   if (tileref.UnitCount() == 0){
-    				   if ((tileref.TileID !=4)&(tileref.TileID != 3)){
-    					   currPlayer.Tileselected.MoveUnit(tileref);
-        				   currPlayer.clearorders();
-        				   con.maindisplay.UpdateSidePanel(tileref);
-        				   Path MPath = new Path(currPlayer.Tileselected,tileref,con.currentGame.gameBoard);
-        				   currPlayer.selectTile(tileref);
-        				   System.out.print("The pathing distance to that tile was: "+ Integer.toString(MPath.Length) +"\n");
-        				   //System.out.print("Iterations: "+ Integer.toString(MPath.Iterations) +"\n");
-    				   } else {
-    					   System.out.print("You cannot move into that tile.\n");  
-    				   }
-    			   } else {
-    				   System.out.print("There is already a unit there.\n");
-    				   //Attack move logic will eventually go here
-    			   }
-    		   } else {
-    			   System.out.print("That is too far away to move!\n"); 
-    		   }
+		   Path MPath = new Path(currPlayer.Tileselected,tileref,con.currentGame.gameBoard);
+		   if (MPath.Length == -1) {
+			   System.out.print("Cannot path to that location.\n"); 
+		   } else {
+			   if (MPath.Length == 0) {
+				   System.out.print("Cannot move to the same tile the unit is in.\n");
+			   } else {
+				   if (MPath.Length > currPlayer.Unitselected.MoveRange) {
+					   System.out.print("That is too far away to move!\n"); 
+				   } else {
+					   if (MPath.Length > currPlayer.Unitselected.MoveLeft) {
+						   System.out.print("Not enough movement available.\n");
+					   } else {
+						   if (tileref.UnitCount() != 0){
+							   System.out.print("There is already a unit there.\n");
+						   } else {
+							   if ((tileref.TileID ==4)|(tileref.TileID == 3)){
+								   System.out.print("You cannot move into that tile.\n");  
+							   } else {
+								   currPlayer.Unitselected.ReduceMoves(MPath.Length);
+								   currPlayer.Tileselected.MoveUnit(tileref);
+								   currPlayer.clearorders();
+								   con.maindisplay.UpdateSidePanel(tileref);
+								   currPlayer.selectTile(tileref);
+								   for (final Tile T: MPath.TileContainer) {
+									   con.maindisplay.gamebuttons[T.xloc][T.yloc].setBackground(Color.CYAN);
+								   }
+							   }
+						   }
+					   }
+    		   		}
+		   		
+    	   		}
+		   }
+       } else if (user.order_attack == true){
+    	   if(tileref.UnitCount() == 0) {
+    		   System.out.print("There is no unit to target here.\n");
     	   } else {
-    		   System.out.print("Cannot move to the same tile.\n");
+    		   if (tileref.UnitGet().ownerID == currPlayer.Unitselected.ownerID) {
+    			   System.out.print("You cannot attack your own forces.\n");
+    		   } else {
+    			   if (currPlayer.Unitselected.MoveLeft == 0) {
+    				   System.out.print("Unit must have a move remaining in order to attack.\n");
+    			   } else {
+    		    	   if (currPlayer.Unitselected.Ranged == false) {
+    		    		   //melee logic
+    		    		   if (meleeDistance(currPlayer.Tileselected,tileref) > 1){
+    		    			   System.out.print("Target must be adjacent for a melee unit to attack.\n");
+    		    		   } else {
+    		    			   //EXECUTE ATTACK M
+    		    			   Integer atk = currPlayer.Unitselected.attack(tileref, 1.0);
+    		    			   if( atk == 1) { tileref.UnitGet().attack(currPlayer.Tileselected, 0.5); }
+    		    			   currPlayer.clearorders();
+							   con.maindisplay.UpdateSidePanel(currPlayer.Tileselected);
+    		    		   }
+    		    	   } else {
+    		    		   //ranged logic
+    		    		   if (rangedDistance(currPlayer.Tileselected,tileref) > currPlayer.Unitselected.AttackRange){
+    		    			   System.out.print("Target is out of this unit's range.\n");
+    		    		   } else {
+    		    			 //EXECUTE ATTACK R
+    		    			   currPlayer.Unitselected.attack(tileref, 1.0);
+    		    			   currPlayer.clearorders();
+							   con.maindisplay.UpdateSidePanel(currPlayer.Tileselected);
+    		    		   }
+    		    	   }
+    			   }
+    		   }
     	   }
-    	   
-       } else if (user.order_rangeattack == true){
-    	   //Ranged attack logic
        } else if (user.order_build == true) {
     	   //Building Logic
        }
@@ -94,7 +138,20 @@ class TileListener implements ActionListener {
        
     }
     
-    public Double tileDistance(Tile A, Tile B) {
+    public Double rangedDistance(Tile A, Tile B) {
+   		Double diffx, diffy = 0.0;
+   		diffx = ((double)A.xloc-(double)B.xloc);
+   		if (diffx<0) { diffx = diffx * -1.0; }
+   		diffy = ((double)A.yloc-(double)B.yloc);
+   		if (diffy<0) { diffy = diffy * -1.0; }
+   		if (diffx > diffy) {
+   			return diffx;
+   		} else {
+   			return diffy;
+   		}
+    }
+    
+    public Double meleeDistance(Tile A, Tile B) {
    		Double diffx, diffy = 0.0;
    		diffx = ((double)A.xloc-(double)B.xloc);
    		if (diffx<0) { diffx = diffx * -1.0; }
