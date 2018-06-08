@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import javax.swing.*;
 import jGameMain.Units.*;
-
+import java.io.*;
 
 import java.io.*;
 import java.util.Properties;
@@ -618,10 +618,16 @@ public class Display {
 	        {
 
 		    	try {
+		    		Tile T = B.tileArray[x][y];
 		    		//String tiletext = B.tileArray[x][y].TileSymbol;
-		    		Color c = B.tileArray[x][y].c;
-		        	gamebuttons[x][y] = new JButton();
-		        	gamebuttons[x][y].setBackground(c);
+		    		Color c = T.c;
+		    		ImageIcon tileicon = new ImageIcon();
+		    		tileicon = new ImageIcon(T.imgURL1, "");
+		    		Image tempimg = tileicon.getImage();
+		    		tileicon = new ImageIcon (tempimg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+		    		gamebuttons[x][y] = new JButton(tileicon);
+		        	gamebuttons[x][y].setVerticalTextPosition(SwingConstants.CENTER);
+		        	gamebuttons[x][y].setHorizontalTextPosition(SwingConstants.CENTER);		
 		        	gamebuttons[x][y].setForeground(Color.BLACK);
 		        	gamebuttons[x][y].setBorder(BorderFactory.createLineBorder(Color.black));
 		    	} catch (NullPointerException ex) {
@@ -700,8 +706,15 @@ public class Display {
 		    			N.setBorder(BorderFactory.createLineBorder(Color.black));
 		    		}
 		    		Color c = T.c;
-		        	N.setBackground(c);
 		    		
+		    		ImageIcon tileicon = new ImageIcon();
+		    		T.animCycle();
+		    		if (T.Anim == 0) { tileicon = new ImageIcon(T.imgURL1, ""); }
+		    		if (T.Anim == 1) { tileicon = new ImageIcon(T.imgURL2, ""); }
+		    		if (T.Anim == 2) { tileicon = new ImageIcon(T.imgURL3, ""); }
+		    		Image tempimg = tileicon.getImage();
+		    		tileicon = new ImageIcon (tempimg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+		    		N.setIcon(tileicon);		    		
 		    	} catch (NullPointerException ex) {
 		    		
 		    	}

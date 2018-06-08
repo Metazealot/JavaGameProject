@@ -14,5 +14,8 @@ public class Forest_Tile extends Tile {
 		Defense = 2.0;
 		c = new Color(50, 155, 25);
 		//RGB
+		imgURL1 = getClass().getResource("\\Forest01.png");
+		imgURL2 = getClass().getResource("\\Forest01.png");
+		imgURL3 = getClass().getResource("\\Forest01.png");
 	}
 }

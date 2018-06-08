@@ -14,5 +14,8 @@ public class Plains_Tile extends Tile {
 		Defense = 0.0;
 		c = new Color(200, 255, 0);
 		//RGB
+		imgURL1 = getClass().getResource("\\Plains01.png");
+		imgURL2 = getClass().getResource("\\Plains01.png");
+		imgURL3 = getClass().getResource("\\Plains01.png");
 	}
 }

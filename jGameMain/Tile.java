@@ -13,6 +13,8 @@ public abstract class Tile {
 	public Color c;
 	public Integer xloc,yloc;
 	public Boolean selected = false;
+	public Integer Anim;
+	public java.net.URL imgURL1, imgURL2, imgURL3; 
 	
 	public Tile() {
 		TileSymbol = "B";
@@ -21,6 +23,15 @@ public abstract class Tile {
 		 Defense = 0.0;
 		UnitContainer = new ArrayList<Unit>();
 		c = Color.GRAY;
+		Anim = 0;
+	}
+	
+	public void animCycle() {
+		if(Anim < 2){
+			Anim+=1;
+		} else {
+			Anim = 0;
+		}
 	}
 	
 	public Integer UnitCount() {

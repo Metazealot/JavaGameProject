@@ -14,5 +14,8 @@ public class Water_Tile extends Tile {
 		Defense = 0.0;
 		c = new Color(25, 50, 200);
 		//RGB
+		imgURL1 = getClass().getResource("\\Water01.png");
+		imgURL2 = getClass().getResource("\\Water02.png");
+		imgURL3 = getClass().getResource("\\Water03.png");
 	}
 }
