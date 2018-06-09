@@ -15,7 +15,7 @@ public class Mountain_Tile extends Tile {
 		c = new Color(100, 100, 40);
 		//RGB
 		imgURL1 = getClass().getResource("\\Mountain01.png");
-		imgURL2 = getClass().getResource("\\Mountain01.png");
-		imgURL3 = getClass().getResource("\\Mountain01.png");
+		imgURL2 = getClass().getResource("\\Mountain02.png");
+		imgURL3 = getClass().getResource("\\Mountain03.png");
 	}
 }

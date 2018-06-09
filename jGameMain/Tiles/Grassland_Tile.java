@@ -15,7 +15,7 @@ public class Grassland_Tile extends Tile {
 		c = new Color(0, 220, 0);
 		//RGB
 		imgURL1 = getClass().getResource("\\Grassland01.png");
-		imgURL2 = getClass().getResource("\\Grassland01.png");
-		imgURL3 = getClass().getResource("\\Grassland01.png");
+		imgURL2 = getClass().getResource("\\Grassland02.png");
+		imgURL3 = getClass().getResource("\\Grassland03.png");
 	}
 }
