@@ -14,6 +14,7 @@ public abstract class Tile {
 	public Integer xloc,yloc;
 	public Boolean selected = false;
 	public Integer Anim;
+	public Integer Flash;
 	public java.net.URL imgURL1, imgURL2, imgURL3; 
 	
 	public Tile() {
@@ -24,6 +25,7 @@ public abstract class Tile {
 		UnitContainer = new ArrayList<Unit>();
 		c = Color.GRAY;
 		Anim = 0;
+		Flash = 0;
 	}
 	
 	public void animCycle() {
@@ -31,6 +33,10 @@ public abstract class Tile {
 			Anim+=1;
 		} else {
 			Anim = 0;
+		}
+		
+		if(Flash > 0) {
+			Flash -= 1;
 		}
 	}
 	

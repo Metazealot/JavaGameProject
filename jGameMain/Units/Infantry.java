@@ -15,6 +15,9 @@ public class Infantry extends Unit {
 		AttackRange = 1.0;
 		Ranged = false;
 		Damage = 20.0;
+		imgURL1 = getClass().getResource("\\Infantry01.png");
+		imgURL2 = getClass().getResource("\\Infantry02.png");
+		imgURL3 = getClass().getResource("\\Infantry03.png");
 
 	}
 }

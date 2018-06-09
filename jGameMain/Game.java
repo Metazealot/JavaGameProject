@@ -47,6 +47,9 @@ public class Game {
 				U.MoveLeft = U.MoveRange;
 			}
 		}
+		//Insert AI decision starter here
+	
 	}
+	
 	
 }

@@ -622,9 +622,9 @@ public class Display {
 		    		//String tiletext = B.tileArray[x][y].TileSymbol;
 		    		Color c = T.c;
 		    		ImageIcon tileicon = new ImageIcon();
-		    		tileicon = new ImageIcon(T.imgURL1, "");
+		    		tileicon = new ImageIcon(T.imgURL1);
 		    		Image tempimg = tileicon.getImage();
-		    		tileicon = new ImageIcon (tempimg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+		    		tileicon = new ImageIcon (tempimg.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
 		    		gamebuttons[x][y] = new JButton(tileicon);
 		        	gamebuttons[x][y].setVerticalTextPosition(SwingConstants.CENTER);
 		        	gamebuttons[x][y].setHorizontalTextPosition(SwingConstants.CENTER);		
@@ -689,32 +689,56 @@ public class Display {
 		    	try {
 		    		Tile T = B.tileArray[x][y];
 		    		JButton N = gamebuttons[x][y];
+		    		
+		    		ImageIcon tileicon = new ImageIcon();
+		    		T.animCycle();
+
+		    		java.net.URL NullURL = getClass().getResource("\\Tiles\\NullTile.png");
+		    		ImageIcon NullIcon = new ImageIcon(NullURL);
+		    		if (T.Anim == 0) { tileicon = new ImageIcon(T.imgURL1); }
+		    		if (T.Anim == 1) { tileicon = new ImageIcon(T.imgURL2); }
+		    		if (T.Anim == 2) { tileicon = new ImageIcon(T.imgURL3); }
+		    		Image tempimg = tileicon.getImage();
+		    		tileicon = new ImageIcon (tempimg.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+		    		
+
 		    		String tiletext = T.TileSymbol;
 		    		Unit U;
+		    		ImageIcon uniticon = new ImageIcon();
+		    		
+		    		
 		    		if (T.UnitCount() != 0) {
 		    			U = T.UnitGet();
 		    			tiletext = U.UnitSymbol + " " + U.ownerOBJ.username.substring(0, 4);
 		    			String lifeC = decimalFixer(U.HealthCurrent);
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
+			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.imgURL1); }
+			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.imgURL2); }
+			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.imgURL3); }
+			    		Image tempimg2 = uniticon.getImage();
+			    		uniticon = new ImageIcon (tempimg2.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH));
+			    		Icon top = uniticon;
+			    		Icon bot = tileicon;
+			    		Icon newicon = new CombineIcon(top,bot);
+			    		N.setIcon(newicon);
 		    		} else {
+		    			N.setIcon(tileicon);
 		    			N.setText("");
 		    		}
+
+		    		
+
+
+		    		//N.setIcon(tileicon);
+		    		
 		    		if (T == con.host.Tileselected) {
 		    			N.setBorder(BorderFactory.createLineBorder(Color.white));
 		    		} else {
-		    			N.setBorder(BorderFactory.createLineBorder(Color.black));
+		    			if (T.Flash == 0) {
+		    				N.setBorder(BorderFactory.createLineBorder(Color.black));	
+		    			}
 		    		}
-		    		Color c = T.c;
-		    		
-		    		ImageIcon tileicon = new ImageIcon();
-		    		T.animCycle();
-		    		if (T.Anim == 0) { tileicon = new ImageIcon(T.imgURL1, ""); }
-		    		if (T.Anim == 1) { tileicon = new ImageIcon(T.imgURL2, ""); }
-		    		if (T.Anim == 2) { tileicon = new ImageIcon(T.imgURL3, ""); }
-		    		Image tempimg = tileicon.getImage();
-		    		tileicon = new ImageIcon (tempimg.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
-		    		N.setIcon(tileicon);		    		
 		    	} catch (NullPointerException ex) {
 		    		
 		    	}
@@ -730,6 +754,29 @@ public class Display {
 	private class MouseControl extends MouseAdapter{
 	      
 	  }
+	
+	public class CombineIcon implements Icon {
+	    private Icon top;
+	    private Icon bottom;
+
+	    public CombineIcon(Icon top, Icon bottom) {
+	        this.top = top;
+	        this.bottom = bottom;
+	    }
+
+	    public int getIconHeight() {
+	        return Math.max(top.getIconHeight(), bottom.getIconHeight());
+	    }
+
+	    public int getIconWidth() {
+	        return Math.max(top.getIconWidth(), bottom.getIconWidth());
+	    }
+
+	    public void paintIcon(Component c, Graphics g, int x, int y) {
+	        bottom.paintIcon(c, g, x, y);
+	        top.paintIcon(c, g, x, y);
+	    }
+	}
 	
 	private String decimalFixer(Double inp) {
 		if (inp % 1.0 == 0.0){

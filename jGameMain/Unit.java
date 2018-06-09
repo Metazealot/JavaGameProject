@@ -15,6 +15,7 @@ public abstract class Unit {
 	public Double AttackRange;
 	public boolean Ranged;
 	public Double Damage;
+	public java.net.URL imgURL1, imgURL2, imgURL3; 
 	
 	public void setOwner(Player P) {
 		ownerID = P.PlayerID;
