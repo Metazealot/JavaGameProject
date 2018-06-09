@@ -10,6 +10,7 @@ public abstract class Tile {
 	public Double Defense;
 	public Integer TileID;
 	public ArrayList<Unit> UnitContainer;
+	public ArrayList<Building> BuildingContainer;
 	public Color c;
 	public Integer xloc,yloc;
 	public Boolean selected = false;
@@ -23,6 +24,7 @@ public abstract class Tile {
 		TileDesc = "";
 		 Defense = 0.0;
 		UnitContainer = new ArrayList<Unit>();
+		BuildingContainer = new ArrayList<Building>();
 		c = Color.GRAY;
 		Anim = 0;
 		Flash = 0;
@@ -48,6 +50,14 @@ public abstract class Tile {
 		return UnitContainer.get(0);
 	}
 	
+	public Integer BuildingCount() {
+		return BuildingContainer.size();
+	}
+	
+	public Building BuildingGet() {
+		return BuildingContainer.get(0);
+	}
+	
 	public Unit UnitClear() {
 		Unit U = UnitGet();
 		UnitContainer.clear();
@@ -63,6 +73,10 @@ public abstract class Tile {
 		UnitContainer.add(U);
 	}
 	
+	public void BuildingAdd(Building B) {
+		BuildingContainer.add(B);
+	}
+	
 	public Integer CreateUnit(Unit U) { //Returns an integer value so that success or failure is reportable.
 		if (UnitContainer.size() == 0) {
 			if ((TileID !=4)&(TileID != 3)){
@@ -73,6 +87,19 @@ public abstract class Tile {
 			}
 		} else {
 			return 0; //Already a unit here
+		}
+	}
+	
+	public Integer CreateBuilding(Building B) { //Returns an integer value so that success or failure is reportable.
+		if (BuildingContainer.size() == 0) {
+			if ((TileID !=4)&(TileID != 3)){
+				BuildingContainer.add(B);
+				return 1; //Placement success
+			} else {
+				return 0; //Tile is mountains or water
+			}
+		} else {
+			return 0; //Already a building here
 		}
 	}
 	

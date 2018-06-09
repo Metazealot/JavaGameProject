@@ -52,6 +52,7 @@ public class Display {
     
     JLabel titleLabel;
     JLabel nameLabel;
+    JLabel turnLabel;
     JLabel[] players;
 	JTextArea tiledesc;
 	JTextArea unitdesc;
@@ -59,6 +60,7 @@ public class Display {
     
     JButton[][] gamebuttons;
     JButton oldTileRef;
+    JButton BMove,BAttack,BCancel,BEndTurn;
     TileListener buttonlisteners[][];
     
     CardLayout cardindex;
@@ -417,9 +419,10 @@ public class Display {
 				
 		//Game Page
 				
-
+				turnLabel = new JLabel("Current Turn: ");
 				TILEINFO.add(tiledesc);
 				UNITINFO.add(unitdesc);
+				TOPR.add(turnLabel);
 				
 				JButton quit=new JButton("Quit");    
 				quit.setBounds(100,100,140, 40);
@@ -485,71 +488,114 @@ public class Display {
 				});
 				TOPL.add(SpawnInf2);
 				
-				JButton MoveUnit=new JButton("Move Unit");    
-				MoveUnit.setBounds(100,100,140, 40);
-				MoveUnit.setActionCommand("action_move");
-				MoveUnit.addActionListener(new ActionListener(){
+				BMove=new JButton("Move Unit");    
+				BMove.setBounds(100,100,140, 40);
+				BMove.setActionCommand("action_move");
+				BMove.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
+						Tile T = con.host.Tileselected;
+						JButton N = gamebuttons[T.xloc][T.yloc];						
 						if (con.host.yourturn == true) {
 							if (con.host.actionqueued == true) {
 								con.host.clearorders();
 							}
-							if (con.host.Tileselected.UnitCount() != 0){ //A unit is present
-								Unit U = con.host.Tileselected.UnitGet();
+							if (T.UnitCount() != 0){ //A unit is present
+								Unit U = T.UnitGet();
 								if (U.ownerID == con.host.PlayerID) { //Unit is owned by player
-									con.host.setorder(1);
-									con.host.selectUnit(U);
-									System.out.print("Click a tile to move this unit to.");
+									if (U.MoveLeft > 0.0) {
+										con.host.setorder(1);
+										con.host.selectUnit(U);
+										System.out.print("Click a tile to move this unit to.");
+									} else {
+										System.out.print("Unit has no moves remaining.");
+										T.Flash = 1;
+										N.setBorder(BorderFactory.createLineBorder(Color.red));
+									}
 								} else {
 									System.out.print("You do not own that unit. Unit's owner is " + Integer.toString(con.host.Tileselected.UnitGet().ownerID) );//+ ". Your ID is " + Integer.toString(con.host.PlayerID));
 								}
 							} else {
 								System.out.print("There is no unit to move at this location.");
+								T.Flash = 1;
+								N.setBorder(BorderFactory.createLineBorder(Color.red));
 							}
 						} else {
 							System.out.print("It is not your turn.");
+							T.Flash = 1;
+							N.setBorder(BorderFactory.createLineBorder(Color.red));
 						}
 					}
 				});
-				BOTTOMR.add(MoveUnit);
+				BOTTOMR.add(BMove);
 				
-				JButton BAttack=new JButton("Attack");    
+				BAttack=new JButton("Attack");    
 				BAttack.setBounds(100,100,140, 40);
 				BAttack.setActionCommand("action_attack");
 				BAttack.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
+						Tile T = con.host.Tileselected;
+						JButton N = gamebuttons[T.xloc][T.yloc];	
 						if (con.host.yourturn == true) {
 							if (con.host.actionqueued == true) {
 								con.host.clearorders();
 							}
-							if (con.host.Tileselected.UnitCount() != 0){ //A unit is present
-								Unit U = con.host.Tileselected.UnitGet();
+							if (T.UnitCount() != 0){ //A unit is present
+								Unit U = T.UnitGet();
 								if (U.ownerID == con.host.PlayerID) { //Unit is owned by player
-									con.host.setorder(2);
-									con.host.selectUnit(U);
-									System.out.print("Click a tile to attack.");
+									if (U.MoveLeft > 0.0) {
+										con.host.setorder(2);
+										con.host.selectUnit(U);
+										System.out.print("Click a tile to attack.");
+									} else {
+										System.out.print("Unit has no moves remaining.");
+										T.Flash = 1;
+										N.setBorder(BorderFactory.createLineBorder(Color.red));
+									}
+
 								} else {
 									System.out.print("You do not own that unit. Unit's owner is " + Integer.toString(con.host.Tileselected.UnitGet().ownerID) );//+ ". Your ID is " + Integer.toString(con.host.PlayerID));
+									T.Flash = 1;
+									N.setBorder(BorderFactory.createLineBorder(Color.red));
 								}
+								
 							} else {
 								System.out.print("There is no unit to attack with at this location.");
+								T.Flash = 1;
+								N.setBorder(BorderFactory.createLineBorder(Color.red));
 							}
 						} else {
 							System.out.print("It is not your turn.");
+							T.Flash = 1;
+							N.setBorder(BorderFactory.createLineBorder(Color.red));
 						}
 					}
 				});
 				BOTTOMR.add(BAttack);
-				
-				JButton CancelOrder=new JButton("Cancel Command");    
-				CancelOrder.setBounds(100,100,140, 40);
-				CancelOrder.setActionCommand("cancel_move");
-				CancelOrder.addActionListener(new ActionListener(){
+				BCancel=new JButton("Cancel Command");    
+				BCancel.setBounds(100,100,140, 40);
+				BCancel.setActionCommand("cancel_move");
+				BCancel.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
+						Tile T = con.host.Tileselected;
+						JButton N = gamebuttons[T.xloc][T.yloc];
+						T.Flash = 1;
+						N.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 						con.host.clearorders();
 					}
 				});
-				BOTTOMR.add(CancelOrder);
+				BOTTOMR.add(BCancel);
+				
+				
+				BEndTurn=new JButton("End Turn");    
+				BEndTurn.setBounds(100,100,140, 40);
+				BEndTurn.setActionCommand("end_turn");
+				BEndTurn.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						con.currentGame.cycleturn();
+						UpdateSidePanel(con.host.Tileselected); 
+					}
+				});
+				BOTTOMR.add(BEndTurn);
 				
 		//Background mouse detection setup and frame config
 		        
@@ -681,6 +727,16 @@ public class Display {
 		Board B = con.currentGame.gameBoard;
 		int W = con.currentGame.Width;
 		int H = con.currentGame.Height;
+		turnLabel.setText("Current Turn: " + con.currentGame.getCurrentPlayer().username + "   Turn: " + Integer.toString(con.currentGame.Turncount));
+		if (con.host != con.currentGame.getCurrentPlayer()) {
+			BMove.disable();
+			BAttack.disable();
+			BEndTurn.disable();
+		} else {
+			BMove.enable();
+			BAttack.enable();
+			BEndTurn.enable();
+		}
 	    for(int x = 0; x < W; x++)
 	    {
 	        for(int y = 0; y < H; y++)

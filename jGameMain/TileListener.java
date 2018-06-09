@@ -86,7 +86,9 @@ class TileListener implements ActionListener {
 								   con.maindisplay.UpdateSidePanel(tileref);
 								   currPlayer.selectTile(tileref);
 								   for (final Tile T: MPath.TileContainer) {
-									   con.maindisplay.gamebuttons[T.xloc][T.yloc].setBackground(Color.CYAN);
+										T.Flash = 1;
+										con.maindisplay.gamebuttons[T.xloc][T.yloc].setBorder(BorderFactory.createLineBorder(Color.CYAN));
+									   
 								   }
 							   }
 						   }

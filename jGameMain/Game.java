@@ -8,9 +8,12 @@ public class Game {
 	Integer Width;
 	Integer Height;
 	Board gameBoard;
+	Integer Turncount;
+	Player originhost;
 	
 	public Game (LinkedList<Player> playerList, Conquest con, Integer W, Integer H) {
 		players = playerList;
+		Units = new LinkedList<Unit>();
 		turnorder = new LinkedList<Player>();
 		for(int x = 0; x < players.size(); x++){ 
 			turnorder.add(players.get(x));
@@ -26,6 +29,8 @@ public class Game {
 		}
 		gameBoard = new Board(Width,Height);
 		con.maindisplay.Instantiate(Width, Height, gameBoard);
+		originhost = con.host;
+		Turncount = 1;
 		
 	}
 	
@@ -41,14 +46,28 @@ public class Game {
 		Player tempplayer = turnorder.removeFirst();
 		tempplayer.turnOff();
 		turnorder.addLast(tempplayer);
-		turnorder.get(0).turnOn();
-		for (Unit U : Units) {
-			if(U.ownerOBJ == turnorder.get(0)){
-				U.MoveLeft = U.MoveRange;
+		Player activeplayer = turnorder.get(0);
+		activeplayer.turnOn();
+		if (activeplayer == originhost) {
+			Turncount += 1;
+		}
+		if (Units.size() != 0 ){
+			for (Unit U : Units) {
+				if(U.ownerOBJ == activeplayer){
+					U.MoveLeft = U.MoveRange;
+				}
 			}
 		}
-		//Insert AI decision starter here
+
+		if (activeplayer.AI == true){
+			AIturn();
+		}
 	
+	}
+	
+	public void AIturn() {
+		cycleturn();
+		System.out.println("AI Turn Cycled");
 	}
 	
 	
