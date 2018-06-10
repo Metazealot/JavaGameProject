@@ -4,18 +4,13 @@ import java.util.*;
 
 public abstract class Tile {
 	
-	public String TileSymbol;
-	public String TileName;
-	public String TileDesc;
+	public String TileSymbol, TileName, TileDesc;
 	public Double Defense;
-	public Integer TileID;
 	public ArrayList<Unit> UnitContainer;
 	public ArrayList<Building> BuildingContainer;
 	public Color c;
-	public Integer xloc,yloc;
+	public Integer xloc,yloc, TileID, Anim, Anim2, Flash;
 	public Boolean selected = false;
-	public Integer Anim;
-	public Integer Flash;
 	public java.net.URL imgURL1, imgURL2, imgURL3; 
 	
 	public Tile() {
@@ -27,14 +22,20 @@ public abstract class Tile {
 		BuildingContainer = new ArrayList<Building>();
 		c = Color.GRAY;
 		Anim = 0;
+		Anim2  = 0;
 		Flash = 0;
 	}
 	
-	public void animCycle() {
-		if(Anim < 2){
-			Anim+=1;
+	public void animCycle() {	
+		if(Anim2 < 1){
+			Anim2+=1;
 		} else {
-			Anim = 0;
+			Anim2 = 0;
+			if (Anim < 2) {
+				Anim +=1;
+			} else {
+				Anim = 0;
+			}
 		}
 		
 		if(Flash > 0) {

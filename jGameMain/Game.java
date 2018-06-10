@@ -5,6 +5,7 @@ public class Game {
 	
 	LinkedList<Player> players, turnorder;
 	LinkedList<Unit> Units;
+	LinkedList<Building> Buildings;
 	Integer Width;
 	Integer Height;
 	Board gameBoard;
@@ -14,6 +15,7 @@ public class Game {
 	public Game (LinkedList<Player> playerList, Conquest con, Integer W, Integer H) {
 		players = playerList;
 		Units = new LinkedList<Unit>();
+		Buildings = new LinkedList<Building>();
 		turnorder = new LinkedList<Player>();
 		for(int x = 0; x < players.size(); x++){ 
 			turnorder.add(players.get(x));
@@ -31,6 +33,7 @@ public class Game {
 		con.maindisplay.Instantiate(Width, Height, gameBoard);
 		originhost = con.host;
 		Turncount = 1;
+		originhost.selectTile(gameBoard.tileArray[0][0]);
 		
 	}
 	

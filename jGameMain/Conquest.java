@@ -148,17 +148,17 @@ public class Conquest implements Runnable{
 	protected void update(int deltaTime){
 		//Time operator. May end up removing this section as it was designed for real-time system alterations.
 		//However, it could be useful for animation purposes.
-		x += deltaTime * 0.2;
-		while(x > 50){
+		x += deltaTime * 1;
+		while(x > 100){
 			if (gameactive==true) {
 				try {
 					maindisplay.UpdateDisplay();
 				} catch (NullPointerException ex) {
-					System.out.print("Display Update Failed\n");
+					System.out.print("Display Update Pending\n");
 				} 
 				
 			}
-			x -= 50;
+			x -= 100;
 		}
 	}
 

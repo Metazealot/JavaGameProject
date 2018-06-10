@@ -7,6 +7,8 @@ public abstract class Building {
 	public Double HealthMax = 0.0;
 	public Double HealthCurrent = 0.0;
 	public Double DefenseBonus = 0.0;
+	public Double ActionsLeft = 0.0;
+	public Double ActionsMax = 0.0;
 	public Integer ownerID;
 	public Player ownerOBJ;
 	public Integer unitID = 0;

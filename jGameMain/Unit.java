@@ -27,7 +27,11 @@ public abstract class Unit {
 		if (MoveLeft != 0.0){
 			Unit Target = Location.UnitGet();
 			Double dmg = (Damage * scale);
-			Target.HealthCurrent = Target.HealthCurrent - (dmg - (Target.Armor + Location.Defense));
+			Double dVal = Location.Defense;
+			if (Location.BuildingCount() != 0) {
+				dVal += Location.BuildingGet().DefenseBonus;
+			}
+			Target.HealthCurrent = Target.HealthCurrent - (dmg - (Target.Armor + dVal ));
 			MoveLeft = 0.0;
 			if(Target.HealthCurrent <= 0.0){
 				Location.UnitContainer.clear();

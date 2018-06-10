@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import javax.swing.*;
 import jGameMain.Units.*;
+import jGameMain.Buildings.*;
 import java.io.*;
 
 import java.io.*;
@@ -488,6 +489,29 @@ public class Display {
 				});
 				TOPL.add(SpawnInf2);
 				
+				JButton SpawnCity=new JButton("Spawn City");    
+				SpawnCity.setBounds(100,100,140, 40);
+				SpawnCity.setActionCommand("createcity");
+				SpawnCity.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							Integer result = T.CreateBuilding(new City());
+							if (result==1) {
+								System.out.print("Success");
+								T.BuildingContainer.get(0).setOwner(con.host);
+								con.currentGame.Buildings.add(T.BuildingContainer.get(0));
+							} else {
+								System.out.print("Failure");
+							}
+							UpdateSidePanel(T);
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+				TOPL.add(SpawnCity);
+				
 				BMove=new JButton("Move Unit");    
 				BMove.setBounds(100,100,140, 40);
 				BMove.setActionCommand("action_move");
@@ -508,7 +532,7 @@ public class Display {
 										System.out.print("Click a tile to move this unit to.");
 									} else {
 										System.out.print("Unit has no moves remaining.");
-										T.Flash = 1;
+										T.Flash = 3;
 										N.setBorder(BorderFactory.createLineBorder(Color.red));
 									}
 								} else {
@@ -516,12 +540,12 @@ public class Display {
 								}
 							} else {
 								System.out.print("There is no unit to move at this location.");
-								T.Flash = 1;
+								T.Flash = 3;
 								N.setBorder(BorderFactory.createLineBorder(Color.red));
 							}
 						} else {
 							System.out.print("It is not your turn.");
-							T.Flash = 1;
+							T.Flash = 3;
 							N.setBorder(BorderFactory.createLineBorder(Color.red));
 						}
 					}
@@ -548,24 +572,24 @@ public class Display {
 										System.out.print("Click a tile to attack.");
 									} else {
 										System.out.print("Unit has no moves remaining.");
-										T.Flash = 1;
+										T.Flash = 3;
 										N.setBorder(BorderFactory.createLineBorder(Color.red));
 									}
 
 								} else {
 									System.out.print("You do not own that unit. Unit's owner is " + Integer.toString(con.host.Tileselected.UnitGet().ownerID) );//+ ". Your ID is " + Integer.toString(con.host.PlayerID));
-									T.Flash = 1;
+									T.Flash = 3;
 									N.setBorder(BorderFactory.createLineBorder(Color.red));
 								}
 								
 							} else {
 								System.out.print("There is no unit to attack with at this location.");
-								T.Flash = 1;
+								T.Flash = 3;
 								N.setBorder(BorderFactory.createLineBorder(Color.red));
 							}
 						} else {
 							System.out.print("It is not your turn.");
-							T.Flash = 1;
+							T.Flash = 3;
 							N.setBorder(BorderFactory.createLineBorder(Color.red));
 						}
 					}
@@ -578,7 +602,7 @@ public class Display {
 					public void actionPerformed(ActionEvent e) {
 						Tile T = con.host.Tileselected;
 						JButton N = gamebuttons[T.xloc][T.yloc];
-						T.Flash = 1;
+						T.Flash = 2;
 						N.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
 						con.host.clearorders();
 					}
@@ -665,8 +689,6 @@ public class Display {
 
 		    	try {
 		    		Tile T = B.tileArray[x][y];
-		    		//String tiletext = B.tileArray[x][y].TileSymbol;
-		    		Color c = T.c;
 		    		ImageIcon tileicon = new ImageIcon();
 		    		tileicon = new ImageIcon(T.imgURL1);
 		    		Image tempimg = tileicon.getImage();
@@ -701,11 +723,10 @@ public class Display {
 		oldTileRef = gamebuttons[T.xloc][T.yloc]; //overwrite the old reference so that the next time this is called,
 		//the color will be overwritten of the last selected button.
 		gamebuttons[T.xloc][T.yloc].setBorder(BorderFactory.createLineBorder(Color.white));
-		Integer UnitCount = T.UnitCount();
-		if(UnitCount==0) {
+		if(T.UnitCount()==0) {
 			unitdesc.setText("No Units on this Tile");
 		}else {
-			Unit U = T.UnitContainer.get(0);
+			Unit U = T.UnitGet();
 			unitdesc.setText(U.UnitName + "\n"+U.UnitDesc + "\n" + 
 			"\nOwner: " + U.ownerOBJ.username +
 			"\nHealth: " + decimalFixer(U.HealthCurrent)+ "/" + decimalFixer(U.HealthMax) +
@@ -716,10 +737,23 @@ public class Display {
 			""
 			);
 		}
-		tiledesc.setText(T.TileName +
-		"\nDefense: " + decimalFixer(T.Defense) +
-		"\n"+ T.TileDesc 
-		);
+		if (T.BuildingCount()==0) {
+			tiledesc.setText(T.TileName +
+					"\nDefense: " + decimalFixer(T.Defense) +
+					"\n"+ T.TileDesc +
+					""
+					);
+		} else {
+			Building bld = T.BuildingGet();
+			tiledesc.setText(T.TileName +
+					"\nDefense: " + decimalFixer(T.Defense) + " (+" + decimalFixer(bld.DefenseBonus) + ")" +
+					"\n"+ T.TileDesc +
+					"\n" +
+					"\n" + bld.BuildingName + 
+					"\n"+bld.BuildingDesc +
+					""
+					);
+		}
 
 	}
 	
@@ -729,13 +763,34 @@ public class Display {
 		int H = con.currentGame.Height;
 		turnLabel.setText("Current Turn: " + con.currentGame.getCurrentPlayer().username + "   Turn: " + Integer.toString(con.currentGame.Turncount));
 		if (con.host != con.currentGame.getCurrentPlayer()) {
-			BMove.disable();
-			BAttack.disable();
-			BEndTurn.disable();
+			BMove.setEnabled(false);
+			BAttack.setEnabled(false);
+			BEndTurn.setEnabled(false);
+			BCancel.setEnabled(false);
 		} else {
-			BMove.enable();
-			BAttack.enable();
-			BEndTurn.enable();
+			BEndTurn.setEnabled(true);
+			if (con.host.Tileselected.UnitCount() != 0) {
+				Unit Utest = con.host.Tileselected.UnitGet();
+				if ((Utest.ownerOBJ != con.host)|(Utest.MoveLeft ==0)){
+					BMove.setEnabled(false);
+					BAttack.setEnabled(false);
+				} else {
+					BMove.setEnabled(true);
+					BAttack.setEnabled(true);
+				}
+			} else {
+				BMove.setEnabled(false);
+				BAttack.setEnabled(false);
+			}
+			if (con.host.actionqueued == true) {
+				BCancel.setEnabled(true);
+				BMove.setEnabled(false);
+				BAttack.setEnabled(false);
+			} else {
+				BCancel.setEnabled(false);
+			}
+
+			
 		}
 	    for(int x = 0; x < W; x++)
 	    {
@@ -760,10 +815,12 @@ public class Display {
 
 		    		String tiletext = T.TileSymbol;
 		    		Unit U;
+		    		Building Bld;
 		    		ImageIcon uniticon = new ImageIcon();
+		    		ImageIcon bldicon = new ImageIcon();
 		    		
 		    		
-		    		if (T.UnitCount() != 0) {
+		    		if ((T.UnitCount() != 0) && (T.BuildingCount() ==0)) {
 		    			U = T.UnitGet();
 		    			tiletext = U.UnitSymbol + " " + U.ownerOBJ.username.substring(0, 4);
 		    			String lifeC = decimalFixer(U.HealthCurrent);
@@ -778,15 +835,47 @@ public class Display {
 			    		Icon bot = tileicon;
 			    		Icon newicon = new CombineIcon(top,bot);
 			    		N.setIcon(newicon);
+		    		} else if ((T.UnitCount() == 0 ) && (T.BuildingCount() != 0)) {
+		    			Bld = T.BuildingGet();
+			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.imgURL1); }
+			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.imgURL2); }
+			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.imgURL3); }
+		    			Image tempimg2 = bldicon.getImage();
+			    		bldicon = new ImageIcon (tempimg2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+			    		Icon top = bldicon;
+			    		Icon bot = tileicon;
+			    		Icon newicon = new CombineIcon(top,bot);
+			    		N.setIcon(newicon);
+		    		} else if ((T.UnitCount() != 0 ) && (T.BuildingCount() != 0)) {
+		    			Bld = T.BuildingGet();
+			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.imgURL1); }
+			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.imgURL2); }
+			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.imgURL3); }
+		    			Image tempimg2 = bldicon.getImage();
+			    		bldicon = new ImageIcon (tempimg2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+			    		Icon top = bldicon;
+			    		Icon bot = tileicon;
+			    		Icon newicon = new CombineIcon(top,bot);
+		    			U = T.UnitGet();
+		    			tiletext = U.UnitSymbol + " " + U.ownerOBJ.username.substring(0, 4);
+		    			String lifeC = decimalFixer(U.HealthCurrent);
+		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
+		    			N.setFont(new Font("Verdana",1,12));
+			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.imgURL1); }
+			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.imgURL2); }
+			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.imgURL3); }
+			    		tempimg2 = uniticon.getImage();
+			    		uniticon = new ImageIcon (tempimg2.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH));
+			    		top = uniticon;
+			    		bot = newicon;
+			    		newicon = new CombineIcon(top,bot);
+			    		N.setIcon(newicon);
 		    		} else {
 		    			N.setIcon(tileicon);
 		    			N.setText("");
 		    		}
 
-		    		
 
-
-		    		//N.setIcon(tileicon);
 		    		
 		    		if (T == con.host.Tileselected) {
 		    			N.setBorder(BorderFactory.createLineBorder(Color.white));
