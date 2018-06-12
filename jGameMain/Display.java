@@ -60,7 +60,7 @@ public class Display {
     
     JButton[][] gamebuttons;
     JButton oldTileRef;
-    JButton BMove,BAttack,BCancel,BEndTurn, BTrainmenu, BBuildmenu, BTrain01, BTrain02, BBuild01;
+    JButton BMove,BAttack,BCancel,BEndTurn, BTrainmenu, BBuildmenu, BTrain01, BTrain02, BTrain03, BBuild01, BBuild02, BBuild03, BBuild04;
     TileListener buttonlisteners[][];
     JPopupMenu trainpopup, buildpopup;
     
@@ -463,7 +463,7 @@ public class Display {
 					}
 				});
 				TOPL.add(quit);
-				
+				/*
 				JButton SpawnInf2=new JButton("Spawn Hostile");    
 				SpawnInf2.setBounds(100,100,140, 40);
 				SpawnInf2.setActionCommand("createunitinfantry");
@@ -514,6 +514,7 @@ public class Display {
 					}
 				});
 				TOPL.add(SpawnCity);
+				*/
 				
 				BMove=new JButton("Move Unit");    
 				BMove.setBounds(100,100,140, 40);
@@ -614,7 +615,11 @@ public class Display {
 				
 				//TRAINING UNIT MENU
 				
-				BTrain01=new JButton("<html>" + "Train Worker" + " <font color=\"orange\">" + " (" + 50 + ")" + "</font></html>");    
+				Integer workercost = 10;
+				Integer infantrycost = 20;
+				Integer archercost = 25;
+				
+				BTrain01=new JButton("<html>" + "Train Worker" + " <font color=\"orange\">" + " (" + workercost + ")" + "</font></html>");    
 				BTrain01.setBounds(100,100,140, 40);
 				BTrain01.setActionCommand("train01");
 				BTrain01.addActionListener(new ActionListener(){
@@ -622,7 +627,7 @@ public class Display {
 						try {
 							Tile T = con.host.Tileselected;
 							JButton N = gamebuttons[T.xloc][T.yloc];
-							if (con.host.resource1 > 50){
+							if (con.host.resource1 >= workercost){
 								if (con.host.resource2 < con.host.resource3) {
 									Integer result = T.CreateUnit(new Worker());
 									if (result==1) {
@@ -630,7 +635,7 @@ public class Display {
 										T.UnitContainer.get(0).setOwner(con.host);
 										con.currentGame.Units.add(T.UnitContainer.get(0));
 										trainpopup.setVisible(false);
-										con.host.resource1 -= 50;
+										con.host.resource1 -= workercost;
 									} else {
 										System.out.print("Failure");
 									}
@@ -651,7 +656,8 @@ public class Display {
 					}
 				});
 				
-				BTrain02=new JButton("<html>" + "Train Infantry" + " <font color=\"orange\">" + " (" + 100 + ")" + "</font></html>");     
+
+				BTrain02=new JButton("<html>" + "Train Infantry" + " <font color=\"orange\">" + " (" + infantrycost + ")" + "</font></html>");     
 				BTrain02.setBounds(100,100,140, 40);
 				BTrain02.setActionCommand("train02");
 				BTrain02.addActionListener(new ActionListener(){
@@ -659,7 +665,7 @@ public class Display {
 						try {
 							Tile T = con.host.Tileselected;
 							JButton N = gamebuttons[T.xloc][T.yloc];
-							if (con.host.resource1 > 100){
+							if (con.host.resource1 >= infantrycost){
 								if (con.host.resource2 < con.host.resource3) {
 									Integer result = T.CreateUnit(new Infantry());
 									if (result==1) {
@@ -667,7 +673,7 @@ public class Display {
 										T.UnitContainer.get(0).setOwner(con.host);
 										con.currentGame.Units.add(T.UnitContainer.get(0));
 										trainpopup.setVisible(false);
-										con.host.resource1 -= 100;
+										con.host.resource1 -= infantrycost;
 									} else {
 										System.out.print("Failure");
 									}
@@ -688,9 +694,49 @@ public class Display {
 					}
 				});
 					
+
+				BTrain03=new JButton("<html>" + "Train Archer" + " <font color=\"orange\">" + " (" + archercost + ")" + "</font></html>");     
+				BTrain03.setBounds(100,100,140, 40);
+				BTrain03.setActionCommand("train02");
+				BTrain03.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							JButton N = gamebuttons[T.xloc][T.yloc];
+							if (con.host.resource1 >= archercost){
+								if (con.host.resource2 < con.host.resource3) {
+									Integer result = T.CreateUnit(new Archer());
+									if (result==1) {
+										System.out.print("Success");
+										T.UnitContainer.get(0).setOwner(con.host);
+										con.currentGame.Units.add(T.UnitContainer.get(0));
+										trainpopup.setVisible(false);
+										con.host.resource1 -= archercost;
+									} else {
+										System.out.print("Failure");
+									}
+									UpdateSidePanel(T);
+								} else {
+									System.out.print("Not Enough Supply");
+									T.Flash = 3;
+									N.setBorder(BorderFactory.createLineBorder(Color.orange));
+								}
+							} else {
+								System.out.print("Not Enough Gold");
+								T.Flash = 3;
+								N.setBorder(BorderFactory.createLineBorder(Color.orange));
+							}
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+				
+				
 			    trainpopup = new JPopupMenu();
 			    trainpopup.add(BTrain01);
 			    trainpopup.add(BTrain02);
+			    trainpopup.add(BTrain03);
 			    
 		        BTrainmenu = new JButton("Train");
 		        BTrainmenu.addMouseListener(new MouseAdapter() {
@@ -702,8 +748,14 @@ public class Display {
 		        BOTTOMR.add(BTrainmenu);
 		        
 		        //BUILDING STRUCTURE MENU
+		        buildpopup = new JPopupMenu();
 		        
-				BBuild01=new JButton("<html>" + "Build City" + " <font color=\"orange\">" + " (" + 400 + ")" + "</font></html>");    
+		        Integer citycost = 500;
+		        Integer farmcost = 100;
+		        Integer improvecost = 150;
+		        Integer fortcost = 300;
+		        
+		        BBuild01=new JButton("<html>" + "Build City" + " <font color=\"orange\">" + " (" + citycost + ")" + "</font></html>");
 				BBuild01.setBounds(100,100,140, 40);
 				BBuild01.setActionCommand("build01");
 				BBuild01.addActionListener(new ActionListener(){
@@ -711,14 +763,15 @@ public class Display {
 						try {
 							Tile T = con.host.Tileselected;
 							JButton N = gamebuttons[T.xloc][T.yloc];
-							if (con.host.resource1 > 400){
+							if (con.host.resource1 >= citycost){
 								Integer result = T.CreateBuilding(new City());
 									if (result==1) {
 										System.out.print("Success");
 										T.BuildingContainer.get(0).setOwner(con.host);
 										con.currentGame.Buildings.add(T.BuildingContainer.get(0));
 										buildpopup.setVisible(false);
-										con.host.resource1 -= 400;
+										con.host.resource1 -= citycost;
+										T.UnitGet().MoveLeft = 0.0;
 									} else {
 										System.out.print("Failure");
 									}
@@ -734,10 +787,116 @@ public class Display {
 						}
 					}
 				});
-					
-			    buildpopup = new JPopupMenu();
 			    buildpopup.add(BBuild01);
+			    
+		        
+				BBuild02=new JButton("<html>" + "Build Farm" + " <font color=\"orange\">" + " (" + farmcost + ")" + "</font></html>");
+				BBuild02.setBounds(100,100,140, 40);
+				BBuild02.setActionCommand("build02");
+				BBuild02.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							JButton N = gamebuttons[T.xloc][T.yloc];
+							if (con.host.resource1 >= farmcost){
+								Integer result = T.CreateBuilding(new Farm());
+									if (result==1) {
+										System.out.print("Success");
+										T.BuildingContainer.get(0).setOwner(con.host);
+										con.currentGame.Buildings.add(T.BuildingContainer.get(0));
+										buildpopup.setVisible(false);
+										con.host.resource1 -= farmcost;
+										T.UnitGet().MoveLeft = 0.0;
+									} else {
+										System.out.print("Failure");
+									}
+									UpdateSidePanel(T);
+							} else {
+								System.out.print("Not Enough Gold");
+								T.Flash = 3;
+								N.setBorder(BorderFactory.createLineBorder(Color.orange));
+							}
+							
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+			    buildpopup.add(BBuild02);
 
+		        
+				BBuild03=new JButton("<html>" + "Improve Tile" + " <font color=\"orange\">" + " (" + improvecost + ")" + "</font></html>");
+				BBuild03.setBounds(100,100,140, 40);
+				BBuild03.setActionCommand("build02");
+				BBuild03.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							JButton N = gamebuttons[T.xloc][T.yloc];
+							if (con.host.resource1 >= improvecost){
+								Integer result = 0;
+								if (T.TileID == 0) {result = T.CreateBuilding(new Granary());}
+								if (T.TileID == 1) {result = T.CreateBuilding(new Lumbermill());}
+								if (T.TileID == 2) {result = T.CreateBuilding(new Granary());}
+								if (T.TileID == 5) {result = T.CreateBuilding(new Mine());}
+									if (result==1) {
+										System.out.print("Success");
+										T.BuildingContainer.get(0).setOwner(con.host);
+										con.currentGame.Buildings.add(T.BuildingContainer.get(0));
+										buildpopup.setVisible(false);
+										con.host.resource1 -= improvecost;
+										T.UnitGet().MoveLeft = 0.0;
+									} else {
+										System.out.print("Failure");
+									}
+									UpdateSidePanel(T);
+							} else {
+								System.out.print("Not Enough Gold");
+								T.Flash = 3;
+								N.setBorder(BorderFactory.createLineBorder(Color.orange));
+							}
+							
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+			    buildpopup.add(BBuild03);
+			    
+		        
+				BBuild04=new JButton("<html>" + "Build Fort" + " <font color=\"orange\">" + " (" + fortcost + ")" + "</font></html>");
+				BBuild04.setBounds(100,100,140, 40);
+				BBuild04.setActionCommand("build02");
+				BBuild04.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							JButton N = gamebuttons[T.xloc][T.yloc];
+							if (con.host.resource1 >= fortcost){
+								Integer result = T.CreateBuilding(new Fort());
+									if (result==1) {
+										System.out.print("Success");
+										T.BuildingContainer.get(0).setOwner(con.host);
+										con.currentGame.Buildings.add(T.BuildingContainer.get(0));
+										buildpopup.setVisible(false);
+										con.host.resource1 -= fortcost;
+										T.UnitGet().MoveLeft = 0.0;
+									} else {
+										System.out.print("Failure");
+									}
+									UpdateSidePanel(T);
+							} else {
+								System.out.print("Not Enough Gold");
+								T.Flash = 3;
+								N.setBorder(BorderFactory.createLineBorder(Color.orange));
+							}
+							
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+			    buildpopup.add(BBuild04);
 			    
 		        BBuildmenu = new JButton("Build");
 		        BBuildmenu.addMouseListener(new MouseAdapter() {

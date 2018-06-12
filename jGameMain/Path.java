@@ -95,7 +95,7 @@ public class Path {
 			//System.out.print("Testing Node");
 			untested.sort(new NodeCompare());
 			while((!untested.isEmpty())&&(untested.getFirst().Checked == true)){
-				PathNode junk = untested.removeFirst();
+				untested.removeFirst();
 			}
 			if(untested.isEmpty()) {
 				break;

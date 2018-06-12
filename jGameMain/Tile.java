@@ -12,6 +12,7 @@ public abstract class Tile {
 	public Integer xloc,yloc, TileID, Anim, Anim2, Flash;
 	public Boolean selected = false;
 	public Image img1, img2, img3, img4;
+	public Integer Yield;
 	
 	public Tile() {
 		TileSymbol = "B";
@@ -82,6 +83,8 @@ public abstract class Tile {
 		if (UnitContainer.size() == 0) {
 			if ((TileID !=4)&(TileID != 3)){
 				UnitContainer.add(U);
+				U.MoveLeft = 0.0;
+				U.locate(xloc, yloc);
 				return 1; //Placement success
 			} else {
 				return 0; //Tile is mountains or water
@@ -95,6 +98,7 @@ public abstract class Tile {
 		if (BuildingContainer.size() == 0) {
 			if ((TileID !=4)&(TileID != 3)){
 				BuildingContainer.add(B);
+				B.locate(xloc, yloc);
 				return 1; //Placement success
 			} else {
 				return 0; //Tile is mountains or water

@@ -20,20 +20,22 @@ public class Worker extends Unit {
 		AttackRange = 1.0;
 		Ranged = false;
 		Damage = 5.0;
-		cost = 50;
+		cost = 10;
 		supply = 1;
-		InputStream is = getClass().getResourceAsStream("Worker01.png");
+		
+		String prefix = "Worker";
+		InputStream is = getClass().getResourceAsStream(prefix + "01.png");
     	try{
     		img1 = ImageIO.read(is);
     		is.close();
     	} catch (IOException ex) {System.out.println("IOError");}
-		InputStream is2 = getClass().getResourceAsStream("Worker02.png");
+		InputStream is2 = getClass().getResourceAsStream(prefix + "02.png");
     	try{
     		img2 = ImageIO.read(is2);
     		img4 = ImageIO.read(is2);
     		is2.close();
     	} catch (IOException ex) {System.out.println("IOError");}
-		InputStream is3 = getClass().getResourceAsStream("Worker03.png");
+		InputStream is3 = getClass().getResourceAsStream(prefix + "03.png");
     	try{
     		img3 = ImageIO.read(is3);
     		is3.close();

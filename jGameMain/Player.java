@@ -12,6 +12,7 @@ public class Player {
     Integer PlayerID = 0;
     Unit Unitselected;
     Unit Target;
+    Integer Kills = 0;
     
     
     public Player(String u) {

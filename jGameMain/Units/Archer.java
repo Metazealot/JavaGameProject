@@ -3,24 +3,24 @@ import jGameMain.Unit;
 import java.io.*;
 import javax.imageio.ImageIO;
 
-public class Infantry extends Unit {
+public class Archer extends Unit {
 	
-	public Infantry() {
-		UnitName = "Infantry";
-		UnitSymbol = "IN";
-		UnitDesc = "Basic ground soldier";
-		HealthMax = 50.0;
-		HealthCurrent = 50.0;
-		Armor = 1.0;
+	public Archer() {
+		UnitName = "Archer";
+		UnitSymbol = "AR";
+		UnitDesc = "Ranged Combatant";
+		HealthMax = 30.0;
+		HealthCurrent = 30.0;
+		Armor = 0.0;
 		MoveRange = 4.0;
 		MoveLeft = 4.0;
-		AttackRange = 1.0;
-		Ranged = false;
-		Damage = 20.0;
-		cost = 20;
+		AttackRange = 4.0;
+		Ranged = true;
+		Damage = 10.0;
+		cost = 25;
 		supply = 1;
 		
-		String prefix = "Infantry";
+		String prefix = "Archer";
 		InputStream is = getClass().getResourceAsStream(prefix + "01.png");
     	try{
     		img1 = ImageIO.read(is);

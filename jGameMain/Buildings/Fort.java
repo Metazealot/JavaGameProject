@@ -6,19 +6,19 @@ import javax.imageio.ImageIO;
 
 import jGameMain.Building;
 
-public class City extends Building {
+public class Fort extends Building {
 	
-	public City() {
-		BuildingName = "City";
-		BuildingSymbol = "C";
-		BuildingDesc = "Population Center\nGenerates +5 Gold";
-		HealthMax = 500.0;
-		HealthCurrent = 500.0;
-		DefenseBonus = 4.0;
-		ActionsLeft = 1.0;
-		ActionsMax = 1.0;
+	public Fort() {
+		BuildingName = "Fort";
+		BuildingSymbol = "FT";
+		BuildingDesc = "Provides a massive\nDefense bonus";
+		HealthMax = 200.0;
+		HealthCurrent = 200.0;
+		DefenseBonus = 8.0;
+		ActionsLeft = 0.0;
+		ActionsMax = 0.0;
 		
-		String prefix = "City";
+		String prefix = "Fort";
 		InputStream is = getClass().getResourceAsStream(prefix +"01.png");
     	try{
     		img1 = ImageIO.read(is);

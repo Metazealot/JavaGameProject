@@ -19,6 +19,7 @@ public abstract class Unit {
 	public boolean Ranged;
 	public Double Damage;
 	public Image img1, img2, img3, img4;
+	public Integer xloc, yloc;
 	
 	public void setOwner(Player P) {
 		ownerID = P.PlayerID;
@@ -38,6 +39,7 @@ public abstract class Unit {
 			MoveLeft = 0.0;
 			if(Target.HealthCurrent <= 0.0){
 				Location.UnitContainer.clear();
+				this.ownerOBJ.Kills += 1;
 				return 2;
 			} else {
 				return 1;
@@ -49,5 +51,10 @@ public abstract class Unit {
 	
 	public void ReduceMoves(Integer a){
 		MoveLeft = MoveLeft - a;
+	}
+	
+	public void locate(Integer x, Integer y) {
+		xloc = x;
+		yloc = y;
 	}
 }

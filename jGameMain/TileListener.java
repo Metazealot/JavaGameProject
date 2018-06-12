@@ -33,16 +33,12 @@ class TileListener implements ActionListener {
        //Temporary console visualization to determine that this is reading the correct values. Clicking a button on the display
        //causes the console to print off this information.
        System.out.print("The tile you have selected is at "+ Integer.toString(xloc)+", "+Integer.toString(yloc)+".\n");
-       System.out.print("This tile is a " + tileref.TileName + ".\n");
-       
-       
-       
+            
        //All primary button logic will go below.
        
        user = con.host;
        currPlayer = con.currentGame.getCurrentPlayer(); //This tells whose turn it is currently.
        if (user==currPlayer) {
-    	   System.out.print("It is your turn, player "+ currPlayer.PlayerID + "\n");
     	   checkturn = true;
        }else {
     	   System.out.print("It is not your turn.\n");
@@ -94,6 +90,7 @@ class TileListener implements ActionListener {
 							   } else {
 								   currPlayer.Unitselected.ReduceMoves(MPath.Length);
 								   currPlayer.Tileselected.MoveUnit(tileref);
+								   tileref.UnitGet().locate(tileref.xloc, tileref.yloc);
 								   currPlayer.clearorders();
 								   con.maindisplay.UpdateSidePanel(tileref);
 								   currPlayer.selectTile(tileref);

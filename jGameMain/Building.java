@@ -15,12 +15,16 @@ public abstract class Building {
 	public Player ownerOBJ;
 	public Integer unitID = 0;
 	public Image img1, img2, img3, img4;
+	public Integer xloc, yloc;
 	
 	public void setOwner(Player P) {
 		ownerID = P.PlayerID;
 		ownerOBJ = P;
 	}
 
-	
+	public void locate(Integer x, Integer y) {
+		xloc = x;
+		yloc = y;
+	}
 
 }

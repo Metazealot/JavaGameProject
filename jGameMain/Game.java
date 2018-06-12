@@ -1,6 +1,7 @@
 package jGameMain;
 import java.util.*;
 import jGameMain.Buildings.*;
+import jGameMain.Units.*;
 
 public class Game {
 	
@@ -37,9 +38,21 @@ public class Game {
 		con.maindisplay.Instantiate(Width, Height, gameBoard);
 		originhost = con.host;
 		Turncount = 1;
-		originhost.selectTile(gameBoard.tileArray[0][0]);
 		gameBoard.chosenspot.CreateBuilding(new City());
 		gameBoard.chosenspot.BuildingGet().setOwner(originhost);
+		originhost.selectTile(gameBoard.chosenspot);
+		con.maindisplay.UpdateSidePanel(gameBoard.chosenspot);
+		if (players.size() > 1) {
+			if (gameBoard.EnemyPlacements.size() > 0){
+				for (Tile T: gameBoard.EnemyPlacements) {
+					T.CreateUnit(new Infantry());
+					Unit U = T.UnitGet();
+					U.setOwner(players.get(1));
+					Units.add(U);
+				}
+			}
+		}
+		
 	}
 	
 	public Player getCurrentPlayer() {
@@ -61,8 +74,19 @@ public class Game {
 		}
 		if (Units.size() != 0 ){
 			for (Unit U : Units) {
-				if(U.ownerOBJ == activeplayer){
+				if(U.ownerOBJ == turnorder.get(0)){
 					U.MoveLeft = U.MoveRange;
+					if (U.HealthCurrent < U.HealthMax) {
+						U.HealthCurrent += 1.0;
+						Tile T = gameBoard.tileArray[U.xloc][U.yloc];
+						if (T.BuildingCount() != 0) {
+							if (T.BuildingGet().ownerOBJ == U.ownerOBJ){
+								if (U.HealthCurrent < U.HealthMax) {
+									U.HealthCurrent += 1.0;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -76,7 +100,10 @@ public class Game {
 				if (T.BuildingCount() != 0) {
 					Building Bld = T.BuildingGet();
 					if (Bld.ownerOBJ == activeplayer){
-						activeplayer.resource1 += 50;
+						if (Bld.BuildingName == "City") {activeplayer.resource1 += 5;}
+						else if (Bld.BuildingName == "Granary") {activeplayer.resource1 += 2;}
+						else if (Bld.BuildingName == "Lumbermill") {activeplayer.resource1 += 2;}
+						else if (Bld.BuildingName == "Mine") {activeplayer.resource1 += 3;}
 					}
 				}
 			}
@@ -94,7 +121,14 @@ public class Game {
 				if (T.BuildingCount() != 0) {
 					Building Bld = T.BuildingGet();
 					Player owner = Bld.ownerOBJ;
-						owner.resource3 += 4;
+						if (Bld.BuildingName=="City") {
+							owner.resource3 += 4;
+						} else if (Bld.BuildingName =="Farm") {
+							owner.resource3 += 2;
+							if (T.TileID == 0){
+								owner.resource3 += 1;
+							}
+						}
 				}
 				if (T.UnitCount()!=0) {
 					Unit U = T.UnitGet();
