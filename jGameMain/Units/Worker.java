@@ -10,8 +10,8 @@ public class Worker extends Unit {
 	
 	public Worker() {
 		UnitName = "Worker";
-		UnitSymbol = "Wk";
-		UnitDesc = "Construction or repair unit. Creates buildings.";
+		UnitSymbol = "WK";
+		UnitDesc = "Construction or repair unit.\nCreates buildings.";
 		HealthMax = 20.0;
 		HealthCurrent = 20.0;
 		Armor = 0.0;
@@ -20,6 +20,8 @@ public class Worker extends Unit {
 		AttackRange = 1.0;
 		Ranged = false;
 		Damage = 5.0;
+		cost = 50;
+		supply = 1;
 		InputStream is = getClass().getResourceAsStream("Worker01.png");
     	try{
     		img1 = ImageIO.read(is);

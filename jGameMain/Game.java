@@ -1,5 +1,6 @@
 package jGameMain;
 import java.util.*;
+import jGameMain.Buildings.*;
 
 public class Game {
 	
@@ -11,13 +12,16 @@ public class Game {
 	Board gameBoard;
 	Integer Turncount;
 	Player originhost;
+	Double startingmoney;
 	
 	public Game (LinkedList<Player> playerList, Conquest con, Integer W, Integer H) {
+		startingmoney = 500.0;
 		players = playerList;
 		Units = new LinkedList<Unit>();
 		Buildings = new LinkedList<Building>();
 		turnorder = new LinkedList<Player>();
-		for(int x = 0; x < players.size(); x++){ 
+		for(int x = 0; x < players.size(); x++){
+			players.get(x).resource1 = startingmoney;
 			turnorder.add(players.get(x));
 		}
 		turnorder.get(0).turnOn();
@@ -34,7 +38,8 @@ public class Game {
 		originhost = con.host;
 		Turncount = 1;
 		originhost.selectTile(gameBoard.tileArray[0][0]);
-		
+		gameBoard.chosenspot.CreateBuilding(new City());
+		gameBoard.chosenspot.BuildingGet().setOwner(originhost);
 	}
 	
 	public Player getCurrentPlayer() {
@@ -65,7 +70,39 @@ public class Game {
 		if (activeplayer.AI == true){
 			AIturn();
 		}
+		for (int x = 0; x < Width; x++) {
+			for (int y = 0; y < Height; y++) {
+				Tile T = gameBoard.tileArray[x][y];
+				if (T.BuildingCount() != 0) {
+					Building Bld = T.BuildingGet();
+					if (Bld.ownerOBJ == activeplayer){
+						activeplayer.resource1 += 50;
+					}
+				}
+			}
+		}
+	}
 	
+	public void supplyscan() {
+		for (Player P : players) {
+			P.resource2 = 0.0;
+			P.resource3 = 0.0;
+		}
+		for (int x = 0; x < Width; x++) {
+			for (int y = 0; y < Height; y++) {
+				Tile T = gameBoard.tileArray[x][y];
+				if (T.BuildingCount() != 0) {
+					Building Bld = T.BuildingGet();
+					Player owner = Bld.ownerOBJ;
+						owner.resource3 += 4;
+				}
+				if (T.UnitCount()!=0) {
+					Unit U = T.UnitGet();
+					Player owner = U.ownerOBJ;
+						owner.resource2 += U.supply;
+				}
+			}
+		}
 	}
 	
 	public void AIturn() {

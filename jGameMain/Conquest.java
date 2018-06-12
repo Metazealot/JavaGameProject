@@ -170,6 +170,7 @@ public class Conquest implements Runnable{
 			if (gameactive==true) {
 				try {
 					maindisplay.UpdateDisplay();
+					currentGame.supplyscan();
 				} catch (NullPointerException ex) {
 					System.out.print("Display Update Pending\n");
 					

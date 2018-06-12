@@ -64,21 +64,33 @@ class TileListener implements ActionListener {
 		   Path MPath = new Path(currPlayer.Tileselected,tileref,con.currentGame.gameBoard);
 		   if (MPath.Length == -1) {
 			   System.out.print("Cannot path to that location.\n"); 
+			   tileref.Flash = 3;
+			   con.maindisplay.gamebuttons[tileref.xloc][tileref.yloc].setBorder(BorderFactory.createLineBorder(Color.orange));
 		   } else {
 			   if (MPath.Length == 0) {
 				   System.out.print("Cannot move to the same tile the unit is in.\n");
+				   tileref.Flash = 3;
+				   con.maindisplay.gamebuttons[tileref.xloc][tileref.yloc].setBorder(BorderFactory.createLineBorder(Color.orange));
 			   } else {
 				   if (MPath.Length > currPlayer.Unitselected.MoveRange) {
-					   System.out.print("That is too far away to move!\n"); 
+					   System.out.print("That is too far away to move!\n");
+					   tileref.Flash = 3;
+					   con.maindisplay.gamebuttons[tileref.xloc][tileref.yloc].setBorder(BorderFactory.createLineBorder(Color.orange));
 				   } else {
 					   if (MPath.Length > currPlayer.Unitselected.MoveLeft) {
 						   System.out.print("Not enough movement available.\n");
+						   tileref.Flash = 3;
+						   con.maindisplay.gamebuttons[tileref.xloc][tileref.yloc].setBorder(BorderFactory.createLineBorder(Color.orange));
 					   } else {
 						   if (tileref.UnitCount() != 0){
 							   System.out.print("There is already a unit there.\n");
+							   tileref.Flash = 3;
+							   con.maindisplay.gamebuttons[tileref.xloc][tileref.yloc].setBorder(BorderFactory.createLineBorder(Color.orange));
 						   } else {
 							   if ((tileref.TileID ==4)|(tileref.TileID == 3)){
-								   System.out.print("You cannot move into that tile.\n");  
+								   System.out.print("You cannot move into that tile.\n");
+								   tileref.Flash = 3;
+								   con.maindisplay.gamebuttons[tileref.xloc][tileref.yloc].setBorder(BorderFactory.createLineBorder(Color.orange));
 							   } else {
 								   currPlayer.Unitselected.ReduceMoves(MPath.Length);
 								   currPlayer.Tileselected.MoveUnit(tileref);

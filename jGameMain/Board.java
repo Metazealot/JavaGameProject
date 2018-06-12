@@ -5,12 +5,13 @@ import jGameMain.Tiles.*;
 public class Board {
 	Tile[][] tileArray;
 	Integer Chance, Width, Height;
-	
+	Tile chosenspot;
 	
 	public Board (Integer W, Integer H) {
 		Width=W;
 		Height=H;
 		tileArray =new Tile[Width][Height];
+		
 	
 	
 		for(int x = 0; x < Width; x++){
@@ -31,7 +32,17 @@ public class Board {
         		tileArray[x][y].setCoord(x, y);
         	}
 		}
-	
+		Tile[][] spawnregion = new Tile[6][6];
+		for(int x = 0; x < 6; x++){
+        	for(int y = 0; y < 6; y++){ 
+        		spawnregion[x][y] = tileArray[x][y];
+        	}
+		}
+		Random rd = new Random();
+		chosenspot = spawnregion[rd.nextInt(6)][rd.nextInt(6)];
+		while ((chosenspot.TileID == 3)|(chosenspot.TileID ==4)) {
+			chosenspot = spawnregion[rd.nextInt(6)][rd.nextInt(6)];
+		}
 	}
 
 }

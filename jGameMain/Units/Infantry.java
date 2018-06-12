@@ -17,6 +17,8 @@ public class Infantry extends Unit {
 		AttackRange = 1.0;
 		Ranged = false;
 		Damage = 20.0;
+		cost = 100;
+		supply = 1;
 		InputStream is = getClass().getResourceAsStream("Infantry01.png");
     	try{
     		img1 = ImageIO.read(is);

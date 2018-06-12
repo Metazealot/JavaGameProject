@@ -7,9 +7,6 @@ import jGameMain.Units.*;
 import jGameMain.Buildings.*;
 import java.io.*;
 import java.util.Properties;
-import org.openide.util.*;
-import org.openide.util.lookup.*;
-import org.openide.awt.*;
 
 public class Display {
 	
@@ -55,6 +52,7 @@ public class Display {
     JLabel titleLabel;
     JLabel nameLabel;
     JLabel turnLabel;
+    JLabel R1, R2, R3;
     JLabel[] players;
 	JTextArea tiledesc;
 	JTextArea unitdesc;
@@ -124,7 +122,9 @@ public class Display {
 				TOPR.setPreferredSize(new Dimension(800, 100));
 				TOPR.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				TOPR.setBorder(BorderFactory.createLineBorder(Color.black));
-				TOPR.add(warningbox);
+				TOPR.setLayout(new BoxLayout(TOPR, BoxLayout.Y_AXIS));
+				
+				//TOPR.add(warningbox);
 				TOPpanel.add(TOPL);
 				TOPpanel.add(TOPR);
 				TOPpanel.setLayout(new BoxLayout(TOPpanel, BoxLayout.X_AXIS));
@@ -443,9 +443,13 @@ public class Display {
 		//Game Page
 				
 				turnLabel = new JLabel("Current Turn: ");
+				turnLabel.setAlignmentX(SwingConstants.CENTER);
+				R1 = new JLabel("Gold:     Supply: ");
+				R1.setAlignmentX(SwingConstants.CENTER);
 				TILEINFO.add(tiledesc);
 				UNITINFO.add(unitdesc);
 				TOPR.add(turnLabel);
+				TOPR.add(R1);
 				
 				JButton quit=new JButton("Quit");    
 				quit.setBounds(100,100,140, 40);
@@ -608,58 +612,76 @@ public class Display {
 				});
 				BOTTOMR.add(BCancel);
 				
+				//TRAINING UNIT MENU
 				
-				BEndTurn=new JButton("End Turn");    
-				BEndTurn.setBounds(100,100,140, 40);
-				BEndTurn.setActionCommand("end_turn");
-				BEndTurn.addActionListener(new ActionListener(){
-					public void actionPerformed(ActionEvent e) {
-						con.currentGame.cycleturn();
-						UpdateSidePanel(con.host.Tileselected); 
-					}
-				});
-				BOTTOMR.add(BEndTurn);
-				
-				BTrain01=new JButton("Train Worker");    
+				BTrain01=new JButton("<html>" + "Train Worker" + " <font color=\"orange\">" + " (" + 50 + ")" + "</font></html>");    
 				BTrain01.setBounds(100,100,140, 40);
 				BTrain01.setActionCommand("train01");
 				BTrain01.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
 						try {
 							Tile T = con.host.Tileselected;
-							Integer result = T.CreateUnit(new Worker());
-							if (result==1) {
-								System.out.print("Success");
-								T.UnitContainer.get(0).setOwner(con.host);
-								con.currentGame.Units.add(T.UnitContainer.get(0));
-								trainpopup.setVisible(false);
+							JButton N = gamebuttons[T.xloc][T.yloc];
+							if (con.host.resource1 > 50){
+								if (con.host.resource2 < con.host.resource3) {
+									Integer result = T.CreateUnit(new Worker());
+									if (result==1) {
+										System.out.print("Success");
+										T.UnitContainer.get(0).setOwner(con.host);
+										con.currentGame.Units.add(T.UnitContainer.get(0));
+										trainpopup.setVisible(false);
+										con.host.resource1 -= 50;
+									} else {
+										System.out.print("Failure");
+									}
+									UpdateSidePanel(T);
+								} else {
+									System.out.print("Not Enough Supply");
+									T.Flash = 3;
+									N.setBorder(BorderFactory.createLineBorder(Color.orange));
+								}
 							} else {
-								System.out.print("Failure");
+								System.out.print("Not Enough Gold");
+								T.Flash = 3;
+								N.setBorder(BorderFactory.createLineBorder(Color.orange));
 							}
-							UpdateSidePanel(T);
 						} catch (NullPointerException ex) {
 							//no tile was selected
 						}
 					}
 				});
 				
-				BTrain02=new JButton("Train Infantry");    
+				BTrain02=new JButton("<html>" + "Train Infantry" + " <font color=\"orange\">" + " (" + 100 + ")" + "</font></html>");     
 				BTrain02.setBounds(100,100,140, 40);
 				BTrain02.setActionCommand("train02");
 				BTrain02.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
 						try {
 							Tile T = con.host.Tileselected;
-							Integer result = T.CreateUnit(new Infantry());
-							if (result==1) {
-								System.out.print("Success");
-								T.UnitContainer.get(0).setOwner(con.host);
-								con.currentGame.Units.add(T.UnitContainer.get(0));
-								trainpopup.setVisible(false);
+							JButton N = gamebuttons[T.xloc][T.yloc];
+							if (con.host.resource1 > 100){
+								if (con.host.resource2 < con.host.resource3) {
+									Integer result = T.CreateUnit(new Infantry());
+									if (result==1) {
+										System.out.print("Success");
+										T.UnitContainer.get(0).setOwner(con.host);
+										con.currentGame.Units.add(T.UnitContainer.get(0));
+										trainpopup.setVisible(false);
+										con.host.resource1 -= 100;
+									} else {
+										System.out.print("Failure");
+									}
+									UpdateSidePanel(T);
+								} else {
+									System.out.print("Not Enough Supply");
+									T.Flash = 3;
+									N.setBorder(BorderFactory.createLineBorder(Color.orange));
+								}
 							} else {
-								System.out.print("Failure");
+								System.out.print("Not Enough Gold");
+								T.Flash = 3;
+								N.setBorder(BorderFactory.createLineBorder(Color.orange));
 							}
-							UpdateSidePanel(T);
 						} catch (NullPointerException ex) {
 							//no tile was selected
 						}
@@ -670,16 +692,76 @@ public class Display {
 			    trainpopup.add(BTrain01);
 			    trainpopup.add(BTrain02);
 			    
-		        BTrainmenu = new JButton("Train Units");
+		        BTrainmenu = new JButton("Train");
 		        BTrainmenu.addMouseListener(new MouseAdapter() {
 		            public void mousePressed(MouseEvent e) {
-		                //trainpopup.show(e.getComponent(), e.getX(), e.getY());
 		                trainpopup.show(e.getComponent(), 0, 0);
 		            }
 		        });
 			    
 		        BOTTOMR.add(BTrainmenu);
 		        
+		        //BUILDING STRUCTURE MENU
+		        
+				BBuild01=new JButton("<html>" + "Build City" + " <font color=\"orange\">" + " (" + 400 + ")" + "</font></html>");    
+				BBuild01.setBounds(100,100,140, 40);
+				BBuild01.setActionCommand("build01");
+				BBuild01.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							JButton N = gamebuttons[T.xloc][T.yloc];
+							if (con.host.resource1 > 400){
+								Integer result = T.CreateBuilding(new City());
+									if (result==1) {
+										System.out.print("Success");
+										T.BuildingContainer.get(0).setOwner(con.host);
+										con.currentGame.Buildings.add(T.BuildingContainer.get(0));
+										buildpopup.setVisible(false);
+										con.host.resource1 -= 400;
+									} else {
+										System.out.print("Failure");
+									}
+									UpdateSidePanel(T);
+							} else {
+								System.out.print("Not Enough Gold");
+								T.Flash = 3;
+								N.setBorder(BorderFactory.createLineBorder(Color.orange));
+							}
+							
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+					
+			    buildpopup = new JPopupMenu();
+			    buildpopup.add(BBuild01);
+
+			    
+		        BBuildmenu = new JButton("Build");
+		        BBuildmenu.addMouseListener(new MouseAdapter() {
+		            public void mousePressed(MouseEvent e) {
+		                buildpopup.show(e.getComponent(), 0, 0);
+		            }
+		        });
+			    
+		        BOTTOMR.add(BBuildmenu);
+		        
+		        
+		        
+		        
+		        
+				BEndTurn=new JButton("End Turn");    
+				BEndTurn.setBounds(100,100,140, 40);
+				BEndTurn.setActionCommand("end_turn");
+				BEndTurn.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						con.currentGame.cycleturn();
+						UpdateSidePanel(con.host.Tileselected); 
+					}
+				});
+				BOTTOMR.add(BEndTurn);
 				
 		//Background mouse detection setup and frame config
 		        
@@ -820,45 +902,78 @@ public class Display {
 		int W = con.currentGame.Width;
 		int H = con.currentGame.Height;
 		turnLabel.setText("Current Turn: " + con.currentGame.getCurrentPlayer().username + "   Turn: " + Integer.toString(con.currentGame.Turncount));
+		R1.setText("Gold: " + decimalFixer(con.currentGame.getCurrentPlayer().resource1) + "   Supply: " + decimalFixer(con.currentGame.getCurrentPlayer().resource2) +"/" + decimalFixer(con.currentGame.getCurrentPlayer().resource3));
 		if (con.host != con.currentGame.getCurrentPlayer()) {
 			BMove.setEnabled(false);
 			BAttack.setEnabled(false);
-			BEndTurn.setEnabled(false);
 			BCancel.setEnabled(false);
+			BTrainmenu.setEnabled(false);
+			trainpopup.setEnabled(false);
+			BBuildmenu.setEnabled(false);
+			buildpopup.setEnabled(false);
+			BEndTurn.setEnabled(false);
 		} else {
 			BEndTurn.setEnabled(true);
 			if (con.host.Tileselected.UnitCount() != 0) {
+				BTrainmenu.setEnabled(false);
+				trainpopup.setEnabled(false);
 				Unit Utest = con.host.Tileselected.UnitGet();
 				if ((Utest.ownerOBJ != con.host)|(Utest.MoveLeft ==0)){
 					BMove.setEnabled(false);
 					BAttack.setEnabled(false);
+					BBuildmenu.setEnabled(false);
+					buildpopup.setEnabled(false);
 				} else {
 					BMove.setEnabled(true);
 					BAttack.setEnabled(true);
+					if (Utest.UnitName == "Worker") {
+						if (con.host.Tileselected.BuildingCount() == 0){
+							BBuildmenu.setEnabled(true);
+							buildpopup.setEnabled(true);
+						} else {
+							BBuildmenu.setEnabled(false);
+							buildpopup.setEnabled(false);
+						}
+					} else {
+						BBuildmenu.setEnabled(false);
+						buildpopup.setEnabled(false);
+					}
 				}
+
 			} else {
+				
+				if (con.host.Tileselected.BuildingCount() !=0){
+					if (con.host.Tileselected.UnitCount() ==0) {
+						Building Btest = con.host.Tileselected.BuildingGet();
+						if (Btest.BuildingName == "City") {
+							BTrainmenu.setEnabled(true);
+							trainpopup.setEnabled(true);
+						}
+					}
+				} else {
+					BTrainmenu.setEnabled(false);
+					trainpopup.setEnabled(false);
+				}
+				
+				
 				BMove.setEnabled(false);
 				BAttack.setEnabled(false);
+				BBuildmenu.setEnabled(false);
+				buildpopup.setEnabled(false);
 			}
 			if (con.host.actionqueued == true) {
 				BCancel.setEnabled(true);
 				BMove.setEnabled(false);
+				BEndTurn.setEnabled(false);
 				BAttack.setEnabled(false);
+				BBuildmenu.setEnabled(false);
+				buildpopup.setEnabled(false);
 			} else {
 				BCancel.setEnabled(false);
 			}
 			
 			
-			if ((con.host.Tileselected.BuildingCount() !=0)&&(con.host.Tileselected.UnitCount() ==0)){
-				if (con.host.Tileselected.UnitCount() ==0) {
-					Building Btest = con.host.Tileselected.BuildingGet();
-					if (Btest.BuildingName == "City") {
-						BTrainmenu.setEnabled(true);
-					}
-				}
-			} else {
-				BTrainmenu.setEnabled(false);
-			}
+
 			
 		}
 	    for(int x = 0; x < W; x++)

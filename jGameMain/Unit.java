@@ -11,6 +11,8 @@ public abstract class Unit {
 	public Integer ownerID;
 	public Player ownerOBJ;
 	public Integer unitID = 0;
+	public Integer cost = 0;
+	public Integer supply = 0;
 	public Double MoveRange;
 	public Double MoveLeft;
 	public Double AttackRange;
