@@ -11,7 +11,7 @@ public abstract class Tile {
 	public Color c;
 	public Integer xloc,yloc, TileID, Anim, Anim2, Flash;
 	public Boolean selected = false;
-	public java.net.URL imgURL1, imgURL2, imgURL3; 
+	public Image img1, img2, img3, img4;
 	
 	public Tile() {
 		TileSymbol = "B";

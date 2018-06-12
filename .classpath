@@ -2,5 +2,8 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path=""/>
+	<classpathentry kind="lib" path="jGameMain/lib/org-openide-util-lookup.jar"/>
+	<classpathentry kind="lib" path="jGameMain/lib/org-openide-util.jar"/>
+	<classpathentry kind="lib" path="jGameMain/lib/org-openide-awt.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

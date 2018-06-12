@@ -1,4 +1,5 @@
 package jGameMain;
+import java.awt.*;
 
 public abstract class Unit {
 	public String UnitName;
@@ -15,7 +16,7 @@ public abstract class Unit {
 	public Double AttackRange;
 	public boolean Ranged;
 	public Double Damage;
-	public java.net.URL imgURL1, imgURL2, imgURL3; 
+	public Image img1, img2, img3, img4;
 	
 	public void setOwner(Player P) {
 		ownerID = P.PlayerID;

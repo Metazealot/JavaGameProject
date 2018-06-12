@@ -6,10 +6,10 @@ import javax.swing.*;
 import jGameMain.Units.*;
 import jGameMain.Buildings.*;
 import java.io.*;
-
-import java.io.*;
 import java.util.Properties;
-
+import org.openide.util.*;
+import org.openide.util.lookup.*;
+import org.openide.awt.*;
 
 public class Display {
 	
@@ -51,6 +51,7 @@ public class Display {
     
     JScrollPane boardscroller;
     
+    
     JLabel titleLabel;
     JLabel nameLabel;
     JLabel turnLabel;
@@ -61,8 +62,9 @@ public class Display {
     
     JButton[][] gamebuttons;
     JButton oldTileRef;
-    JButton BMove,BAttack,BCancel,BEndTurn;
+    JButton BMove,BAttack,BCancel,BEndTurn, BTrainmenu, BBuildmenu, BTrain01, BTrain02, BBuild01;
     TileListener buttonlisteners[][];
+    JPopupMenu trainpopup, buildpopup;
     
     CardLayout cardindex;
 	Canvas canvas;
@@ -79,6 +81,7 @@ public class Display {
 				//frame is the game window itself
 				tiledesc = new JTextArea(15,15);
 				unitdesc = new JTextArea(15,15);
+				warningbox = new JTextArea(15,10);
 
 				mainPanel = (JPanel) frame.getContentPane();
 				mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -121,6 +124,7 @@ public class Display {
 				TOPR.setPreferredSize(new Dimension(800, 100));
 				TOPR.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				TOPR.setBorder(BorderFactory.createLineBorder(Color.black));
+				TOPR.add(warningbox);
 				TOPpanel.add(TOPL);
 				TOPpanel.add(TOPR);
 				TOPpanel.setLayout(new BoxLayout(TOPpanel, BoxLayout.X_AXIS));
@@ -138,6 +142,7 @@ public class Display {
 				
 				tiledesc.setEditable(false);
 				unitdesc.setEditable(false);
+				warningbox.setEditable(false);
 
 				UNITINFO.setPreferredSize(new Dimension(200, 250));
 				UNITINFO.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
@@ -183,9 +188,6 @@ public class Display {
 				BOTTOMR.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 				BOTTOMpanel.add(BOTTOMR);
 				BOTTOMpanel.setLayout(new BoxLayout(BOTTOMpanel, BoxLayout.X_AXIS));
-
-				
-				
 				
 				
 				cards = new JPanel(new CardLayout());
@@ -312,7 +314,21 @@ public class Display {
 				});
 				settingsPanel2.add(settings2Bmain);
 				
-				JTextField userBox = new JTextField("Enter New Username");
+				
+				String strval = "Enter New Username";
+				try {
+					InputStream inpt = getClass().getResourceAsStream("config.properties"); 
+					BufferedReader reader = new BufferedReader(new InputStreamReader(inpt));
+				    Properties props = new Properties();
+				    props.load(reader);		 
+				    strval = props.getProperty("username");
+				    reader.close();
+				} catch (FileNotFoundException ex) {
+					
+				} catch (IOException ex) {
+					
+				}
+				JTextField userBox = new JTextField(strval);
 				userBox.setBounds(20,40,40, 20);
 				settingsPanel2.add(userBox);
 				userBox.setMaximumSize(new Dimension(200, 40));
@@ -325,14 +341,20 @@ public class Display {
 						String tempname = userBox.getText();
 						nameLabel.setText(tempname);
 						try {
-							FileReader reader = new FileReader(configFile);
+							//FileReader reader = new FileReader(configFile);
+							InputStream inpt = getClass().getResourceAsStream("config.properties"); 
+							BufferedReader reader = new BufferedReader(new InputStreamReader(inpt));
 						    Properties props = new Properties();
 						    props.load(reader);
 						    props.setProperty("username", tempname);
 						    reader.close();
-						    FileWriter writer = new FileWriter(configFile);
-						    props.store(writer, null);
-						    writer.close();
+						    File propfile = new File("config.properties");
+						    OutputStream outpt = new FileOutputStream(propfile); 
+						    //FileWriter writer = new FileWriter(outpt);
+						    props.store(outpt, "");
+						    //writer.close();
+						    outpt.close();
+							userBox.setText("");
 						} catch (FileNotFoundException ex) {
 							System.out.print("Config File not found.");
 						} catch (IOException ex) {
@@ -437,29 +459,6 @@ public class Display {
 					}
 				});
 				TOPL.add(quit);
-				
-				JButton SpawnInf=new JButton("Spawn Infantry");    
-				SpawnInf.setBounds(100,100,140, 40);
-				SpawnInf.setActionCommand("createunitinfantry");
-				SpawnInf.addActionListener(new ActionListener(){
-					public void actionPerformed(ActionEvent e) {
-						try {
-							Tile T = con.host.Tileselected;
-							Integer result = T.CreateUnit(new Infantry());
-							if (result==1) {
-								System.out.print("Success");
-								T.UnitContainer.get(0).setOwner(con.host);
-								con.currentGame.Units.add(T.UnitContainer.get(0));
-							} else {
-								System.out.print("Failure");
-							}
-							UpdateSidePanel(T);
-						} catch (NullPointerException ex) {
-							//no tile was selected
-						}
-					}
-				});
-				TOPL.add(SpawnInf);
 				
 				JButton SpawnInf2=new JButton("Spawn Hostile");    
 				SpawnInf2.setBounds(100,100,140, 40);
@@ -621,6 +620,67 @@ public class Display {
 				});
 				BOTTOMR.add(BEndTurn);
 				
+				BTrain01=new JButton("Train Worker");    
+				BTrain01.setBounds(100,100,140, 40);
+				BTrain01.setActionCommand("train01");
+				BTrain01.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							Integer result = T.CreateUnit(new Worker());
+							if (result==1) {
+								System.out.print("Success");
+								T.UnitContainer.get(0).setOwner(con.host);
+								con.currentGame.Units.add(T.UnitContainer.get(0));
+								trainpopup.setVisible(false);
+							} else {
+								System.out.print("Failure");
+							}
+							UpdateSidePanel(T);
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+				
+				BTrain02=new JButton("Train Infantry");    
+				BTrain02.setBounds(100,100,140, 40);
+				BTrain02.setActionCommand("train02");
+				BTrain02.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Tile T = con.host.Tileselected;
+							Integer result = T.CreateUnit(new Infantry());
+							if (result==1) {
+								System.out.print("Success");
+								T.UnitContainer.get(0).setOwner(con.host);
+								con.currentGame.Units.add(T.UnitContainer.get(0));
+								trainpopup.setVisible(false);
+							} else {
+								System.out.print("Failure");
+							}
+							UpdateSidePanel(T);
+						} catch (NullPointerException ex) {
+							//no tile was selected
+						}
+					}
+				});
+					
+			    trainpopup = new JPopupMenu();
+			    trainpopup.add(BTrain01);
+			    trainpopup.add(BTrain02);
+			    
+		        BTrainmenu = new JButton("Train Units");
+		        BTrainmenu.addMouseListener(new MouseAdapter() {
+		            public void mousePressed(MouseEvent e) {
+		                //trainpopup.show(e.getComponent(), e.getX(), e.getY());
+		                trainpopup.show(e.getComponent(), 0, 0);
+		            }
+		        });
+			    
+		        BOTTOMR.add(BTrainmenu);
+		        
+				
 		//Background mouse detection setup and frame config
 		        
 				canvas = new Canvas();
@@ -690,9 +750,7 @@ public class Display {
 		    	try {
 		    		Tile T = B.tileArray[x][y];
 		    		ImageIcon tileicon = new ImageIcon();
-		    		tileicon = new ImageIcon(T.imgURL1);
-		    		Image tempimg = tileicon.getImage();
-		    		tileicon = new ImageIcon (tempimg.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+		    		tileicon = new ImageIcon(T.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
 		    		gamebuttons[x][y] = new JButton(tileicon);
 		        	gamebuttons[x][y].setVerticalTextPosition(SwingConstants.CENTER);
 		        	gamebuttons[x][y].setHorizontalTextPosition(SwingConstants.CENTER);		
@@ -789,7 +847,18 @@ public class Display {
 			} else {
 				BCancel.setEnabled(false);
 			}
-
+			
+			
+			if ((con.host.Tileselected.BuildingCount() !=0)&&(con.host.Tileselected.UnitCount() ==0)){
+				if (con.host.Tileselected.UnitCount() ==0) {
+					Building Btest = con.host.Tileselected.BuildingGet();
+					if (Btest.BuildingName == "City") {
+						BTrainmenu.setEnabled(true);
+					}
+				}
+			} else {
+				BTrainmenu.setEnabled(false);
+			}
 			
 		}
 	    for(int x = 0; x < W; x++)
@@ -803,15 +872,10 @@ public class Display {
 		    		
 		    		ImageIcon tileicon = new ImageIcon();
 		    		T.animCycle();
-
-		    		java.net.URL NullURL = getClass().getResource("\\Tiles\\NullTile.png");
-		    		ImageIcon NullIcon = new ImageIcon(NullURL);
-		    		if (T.Anim == 0) { tileicon = new ImageIcon(T.imgURL1); }
-		    		if (T.Anim == 1) { tileicon = new ImageIcon(T.imgURL2); }
-		    		if (T.Anim == 2) { tileicon = new ImageIcon(T.imgURL3); }
-		    		Image tempimg = tileicon.getImage();
-		    		tileicon = new ImageIcon (tempimg.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
 		    		
+		    		if (T.Anim == 0) { tileicon = new ImageIcon(T.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+		    		if (T.Anim == 1) { tileicon = new ImageIcon(T.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+		    		if (T.Anim == 2) { tileicon = new ImageIcon(T.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 
 		    		String tiletext = T.TileSymbol;
 		    		Unit U;
@@ -826,33 +890,28 @@ public class Display {
 		    			String lifeC = decimalFixer(U.HealthCurrent);
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
-			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.imgURL1); }
-			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.imgURL2); }
-			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.imgURL3); }
-			    		Image tempimg2 = uniticon.getImage();
-			    		uniticon = new ImageIcon (tempimg2.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH));
+			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		Icon top = uniticon;
 			    		Icon bot = tileicon;
 			    		Icon newicon = new CombineIcon(top,bot);
 			    		N.setIcon(newicon);
 		    		} else if ((T.UnitCount() == 0 ) && (T.BuildingCount() != 0)) {
 		    			Bld = T.BuildingGet();
-			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.imgURL1); }
-			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.imgURL2); }
-			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.imgURL3); }
-		    			Image tempimg2 = bldicon.getImage();
-			    		bldicon = new ImageIcon (tempimg2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		Icon top = bldicon;
 			    		Icon bot = tileicon;
 			    		Icon newicon = new CombineIcon(top,bot);
 			    		N.setIcon(newicon);
+			    		N.setText("");
 		    		} else if ((T.UnitCount() != 0 ) && (T.BuildingCount() != 0)) {
 		    			Bld = T.BuildingGet();
-			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.imgURL1); }
-			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.imgURL2); }
-			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.imgURL3); }
-		    			Image tempimg2 = bldicon.getImage();
-			    		bldicon = new ImageIcon (tempimg2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		Icon top = bldicon;
 			    		Icon bot = tileicon;
 			    		Icon newicon = new CombineIcon(top,bot);
@@ -861,11 +920,9 @@ public class Display {
 		    			String lifeC = decimalFixer(U.HealthCurrent);
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
-			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.imgURL1); }
-			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.imgURL2); }
-			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.imgURL3); }
-			    		tempimg2 = uniticon.getImage();
-			    		uniticon = new ImageIcon (tempimg2.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH));
+			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		top = uniticon;
 			    		bot = newicon;
 			    		newicon = new CombineIcon(top,bot);
@@ -874,7 +931,7 @@ public class Display {
 		    			N.setIcon(tileicon);
 		    			N.setText("");
 		    		}
-
+		    		warningbox.setText("");
 
 		    		
 		    		if (T == con.host.Tileselected) {
@@ -885,7 +942,7 @@ public class Display {
 		    			}
 		    		}
 		    	} catch (NullPointerException ex) {
-		    		
+		    		warningbox.setText("Display Error");
 		    	}
 	        }
 	    }

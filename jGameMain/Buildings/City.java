@@ -1,4 +1,9 @@
 package jGameMain.Buildings;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
 import jGameMain.Building;
 
 public class City extends Building {
@@ -12,8 +17,21 @@ public class City extends Building {
 		DefenseBonus = 4.0;
 		ActionsLeft = 1.0;
 		ActionsMax = 1.0;
-		imgURL1 = getClass().getResource("\\City01.png");
-		imgURL2 = getClass().getResource("\\City02.png");
-		imgURL3 = getClass().getResource("\\City03.png");		
+		InputStream is = getClass().getResourceAsStream("City01.png");
+    	try{
+    		img1 = ImageIO.read(is);
+    		is.close();
+    	} catch (IOException ex) {System.out.println("IOError");}
+		InputStream is2 = getClass().getResourceAsStream("City02.png");
+    	try{
+    		img2 = ImageIO.read(is2);
+    		img4 = ImageIO.read(is2);
+    		is2.close();
+    	} catch (IOException ex) {System.out.println("IOError");}
+		InputStream is3 = getClass().getResourceAsStream("City03.png");
+    	try{
+    		img3 = ImageIO.read(is3);
+    		is3.close();
+    	} catch (IOException ex) {System.out.println("IOError");}
 	}
 }

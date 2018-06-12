@@ -1,9 +1,5 @@
 package jGameMain;
-import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
-import java.awt.image.BufferStrategy;
-import javax.swing.*;
 import java.io.*;
 import java.util.Properties;
 
@@ -24,7 +20,7 @@ public class Conquest implements Runnable{
 	File configFile;
 	Display maindisplay;
 	String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-	String configPath;
+	//String configPath;
 	String username;
     Lobby currentLobby;
     Game currentGame;
@@ -33,6 +29,7 @@ public class Conquest implements Runnable{
     Integer GameWidth;
     Integer GameHeight;
     Player host;
+    public java.net.URL configURL;
 	boolean gameactive;
     
 	public Conquest(){
@@ -41,8 +38,21 @@ public class Conquest implements Runnable{
 		
 //Loading settings from configuration file	
 		
-		configPath = (rootPath + "jGameMain\\config.properties");
-		configFile = new File(configPath);
+		configURL = getClass().getResource("config.properties");
+		System.out.println(rootPath);
+		System.out.println(configURL.getPath());
+		try {
+			configFile = new File(rootPath + "//jGameMain//config.properties");
+			//configFile = new File(configURL.getPath());
+		} catch (NullPointerException ex) {
+			try {
+			configFile = new File(configURL.getPath());
+			} catch (NullPointerException ex2) {
+				
+			}
+		}
+		//configPath = (rootPath + "jGameMain\\config.properties");
+		//configFile = new File(configPath);
 		username = "DefaultName";
 		FrameWidth = 1000;
 		FrameHeight = 710;
@@ -51,7 +61,8 @@ public class Conquest implements Runnable{
 		
 		
 		try {
-		    FileReader reader = new FileReader(configFile);
+			InputStream inpt = getClass().getResourceAsStream("config.properties"); 
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inpt));
 		    Properties props = new Properties();
 		    props.load(reader);		 
 		    username = props.getProperty("username");
@@ -74,19 +85,25 @@ public class Conquest implements Runnable{
 	public void StartLobby() {
 		
 		try {
-		    FileReader reader = new FileReader(configFile);
+		    //FileReader reader = new FileReader(configFile);
+			InputStream inpt = getClass().getResourceAsStream("config.properties"); 
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inpt));
 		    Properties props = new Properties();
 		    props.load(reader);		 
 		    username = props.getProperty("username");
 		    reader.close();
+		    host = new Player(username);
+			currentLobby = new Lobby (host, this);
 		} catch (FileNotFoundException ex) {
 			System.out.print("Config File not found.");
+			host = new Player(rootPath + configURL.getPath());
+			currentLobby = new Lobby (host, this);
 		} catch (IOException ex) {
 			System.out.print("I/O Error");
+			host = new Player("IOERR");
+			currentLobby = new Lobby (host, this);
 		}
-		
-		host = new Player(username);
-		currentLobby = new Lobby (host, this);
+
 	}
 	
 	public void StartGame(LinkedList<Player> playerList) {
@@ -155,6 +172,13 @@ public class Conquest implements Runnable{
 					maindisplay.UpdateDisplay();
 				} catch (NullPointerException ex) {
 					System.out.print("Display Update Pending\n");
+					
+					try {
+						maindisplay.warningbox.setText("Display Update Pending");
+
+					} catch (NullPointerException ex2) {
+						
+					}
 				} 
 				
 			}

@@ -1,5 +1,7 @@
 package jGameMain;
 
+import java.awt.Image;
+
 public abstract class Building {
 	public String BuildingName;
 	public String BuildingSymbol;
@@ -12,7 +14,7 @@ public abstract class Building {
 	public Integer ownerID;
 	public Player ownerOBJ;
 	public Integer unitID = 0;
-	public java.net.URL imgURL1, imgURL2, imgURL3; 
+	public Image img1, img2, img3, img4;
 	
 	public void setOwner(Player P) {
 		ownerID = P.PlayerID;
