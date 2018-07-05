@@ -993,7 +993,7 @@ public class Display {
 		    	try {
 		    		Tile T = B.tileArray[x][y];
 		    		ImageIcon tileicon = new ImageIcon();
-		    		tileicon = new ImageIcon(T.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+		    		tileicon = ImgLb.getImage(T.TileName, T.Anim);
 		    		gamebuttons[x][y] = new JButton(tileicon);
 		        	gamebuttons[x][y].setVerticalTextPosition(SwingConstants.CENTER);
 		        	gamebuttons[x][y].setHorizontalTextPosition(SwingConstants.CENTER);		
@@ -1145,40 +1145,32 @@ public class Display {
 		    	try {
 		    		Tile T = B.tileArray[x][y];
 		    		JButton N = gamebuttons[x][y];
-		    		
-		    		ImageIcon tileicon = new ImageIcon();
-		    		T.animCycle();
-		    		
-		    		if (T.Anim == 0) { tileicon = new ImageIcon(T.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-		    		if (T.Anim == 1) { tileicon = new ImageIcon(T.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-		    		if (T.Anim == 2) { tileicon = new ImageIcon(T.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-
-		    		String tiletext = T.TileSymbol;
 		    		Unit U;
 		    		Building Bld;
+		    		
+		    		ImageIcon tileicon = new ImageIcon();
 		    		ImageIcon uniticon = new ImageIcon();
 		    		ImageIcon bldicon = new ImageIcon();
 		    		
+		    		T.animCycle();
 		    		
+		    		tileicon = ImgLb.getImage(T.TileName, T.Anim);
+		    		String tiletext = T.TileSymbol;
+
 		    		if ((T.UnitCount() != 0) && (T.BuildingCount() ==0)) {
 		    			U = T.UnitGet();
 		    			tiletext = U.UnitSymbol + " " + U.ownerOBJ.username.substring(0, 4);
 		    			String lifeC = decimalFixer(U.HealthCurrent);
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
-			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		//if (T.Anim == 0) { uniticon = ImgLb.getImage(U.UnitName);}
-			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+		    			uniticon = ImgLb.getImage(U.UnitName, T.Anim);
 			    		Icon top = uniticon;
 			    		Icon bot = tileicon;
 			    		Icon newicon = new CombineIcon(top,bot);
 			    		N.setIcon(newicon);
 		    		} else if ((T.UnitCount() == 0 ) && (T.BuildingCount() != 0)) {
 		    			Bld = T.BuildingGet();
-			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+		    			bldicon = ImgLb.getImage(Bld.BuildingName, T.Anim);
 			    		Icon top = bldicon;
 			    		Icon bot = tileicon;
 			    		Icon newicon = new CombineIcon(top,bot);
@@ -1186,9 +1178,7 @@ public class Display {
 			    		N.setText("");
 		    		} else if ((T.UnitCount() != 0 ) && (T.BuildingCount() != 0)) {
 		    			Bld = T.BuildingGet();
-			    		if (T.Anim == 0) { bldicon = new ImageIcon(Bld.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 1) { bldicon = new ImageIcon(Bld.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 2) { bldicon = new ImageIcon(Bld.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+		    			bldicon = ImgLb.getImage(Bld.BuildingName, T.Anim);
 			    		Icon top = bldicon;
 			    		Icon bot = tileicon;
 			    		Icon newicon = new CombineIcon(top,bot);
@@ -1197,9 +1187,7 @@ public class Display {
 		    			String lifeC = decimalFixer(U.HealthCurrent);
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
-			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+		    			uniticon = ImgLb.getImage(U.UnitName, T.Anim);
 			    		top = uniticon;
 			    		bot = newicon;
 			    		newicon = new CombineIcon(top,bot);

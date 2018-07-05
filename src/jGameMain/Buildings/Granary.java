@@ -17,15 +17,5 @@ public class Granary extends Building {
 		DefenseBonus = 1.0;
 		ActionsLeft = 0.0;
 		ActionsMax = 0.0;
-		
-		String prefix = "Granary";
-		InputStream is = getClass().getResourceAsStream(prefix +"01.png");
-    	try{
-    		img1 = ImageIO.read(is);
-    		img2 = ImageIO.read(is);
-    		img3 = ImageIO.read(is);
-    		img4 = ImageIO.read(is);
-    		is.close();
-    	} catch (IOException ex) {System.out.println("IOError");}
 	}
 }

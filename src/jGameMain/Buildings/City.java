@@ -17,7 +17,7 @@ public class City extends Building {
 		DefenseBonus = 4.0;
 		ActionsLeft = 1.0;
 		ActionsMax = 1.0;
-		
+/*
 		String prefix = "City";
 		InputStream is = getClass().getResourceAsStream(prefix +"01.png");
     	try{
@@ -35,5 +35,6 @@ public class City extends Building {
     		img3 = ImageIO.read(is3);
     		is3.close();
     	} catch (IOException ex) {System.out.println("IOError");}
+*/
 	}
 }

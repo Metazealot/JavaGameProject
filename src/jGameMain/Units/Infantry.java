@@ -19,7 +19,7 @@ public class Infantry extends Unit {
 		Damage = 20.0;
 		cost = 20;
 		supply = 1;
-		
+/*
 		String prefix = "Infantry";
 		InputStream is = getClass().getResourceAsStream(prefix + "01.png");
     	try{
@@ -37,5 +37,6 @@ public class Infantry extends Unit {
     		img3 = ImageIO.read(is3);
     		is3.close();
     	} catch (IOException ex) {System.out.println("IOError");}
+*/
 	}
 }

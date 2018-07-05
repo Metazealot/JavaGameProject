@@ -22,20 +22,20 @@ public abstract class Tile {
 		UnitContainer = new ArrayList<Unit>();
 		BuildingContainer = new ArrayList<Building>();
 		c = Color.GRAY;
-		Anim = 0;
-		Anim2  = 0;
+		Anim = 1;
+		Anim2  = 1;
 		Flash = 0;
 	}
 	
 	public void animCycle() {	
-		if(Anim2 < 1){
+		if(Anim2 < 2){
 			Anim2+=1;
 		} else {
-			Anim2 = 0;
-			if (Anim < 2) {
+			Anim2 = 1;
+			if (Anim < 3) {
 				Anim +=1;
 			} else {
-				Anim = 0;
+				Anim = 1;
 			}
 		}
 		

@@ -17,6 +17,7 @@ public class Forest_Tile extends Tile {
 		Defense = 2.0;
 		c = new Color(50, 155, 25);
 		//RGB
+		/*
 		InputStream is = getClass().getResourceAsStream("Forest01.png");
     	try{
     		img1 = ImageIO.read(is);
@@ -34,5 +35,6 @@ public class Forest_Tile extends Tile {
     		img3 = ImageIO.read(is3);
     		is3.close();
     	} catch (IOException ex) {System.out.println("IOError");}
+    	*/
 	}
 }
