@@ -70,6 +70,7 @@ public class Display {
 	File configFile;
 	BufferStrategy bufferStrategy;
 	Conquest con;
+	ImageLib ImgLb;
 	
 	public Display(Conquest conin){
 		
@@ -80,6 +81,7 @@ public class Display {
 				tiledesc = new JTextArea(15,15);
 				unitdesc = new JTextArea(15,15);
 				warningbox = new JTextArea(15,10);
+				ImgLb = new ImageLib();
 
 				mainPanel = (JPanel) frame.getContentPane();
 				mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -1165,6 +1167,7 @@ public class Display {
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
 			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
+			    		if (T.Anim == 0) { uniticon = img }
 			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		Icon top = uniticon;

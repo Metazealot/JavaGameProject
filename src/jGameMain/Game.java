@@ -140,6 +140,14 @@ public class Game {
 	}
 	
 	public void AIturn() {
+		if (Units.size() != 0 ){
+			for (Unit U : Units) {
+				if(U.ownerOBJ == turnorder.get(0)){
+					//Action logic for units
+					//Scanning, pathing, and attack maneuvers go here
+				}
+			}
+		}
 		cycleturn();
 		System.out.println("AI Turn Cycled");
 	}
