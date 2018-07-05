@@ -1167,7 +1167,7 @@ public class Display {
 		    			N.setText("<html>" + tiletext + " <font color=\"red\">" + "(" + lifeC + ")" + "</font></html>");
 		    			N.setFont(new Font("Verdana",1,12));
 			    		if (T.Anim == 0) { uniticon = new ImageIcon(U.img1.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
-			    		if (T.Anim == 0) { uniticon = img }
+			    		//if (T.Anim == 0) { uniticon = ImgLb.getImage(U.UnitName);}
 			    		if (T.Anim == 1) { uniticon = new ImageIcon(U.img2.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		if (T.Anim == 2) { uniticon = new ImageIcon(U.img3.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH)); }
 			    		Icon top = uniticon;
